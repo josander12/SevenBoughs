@@ -2,6 +2,11 @@ main {
   min-height: 80vh;
 }
 
+body {
+  height: 100%;
+  overflow: hidden;
+}
+
 .rating span {
   margin: 0.1rem;
 }
@@ -50,4 +55,9 @@ table th {
   right: 0;
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+  max-height: 5rem;
+  padding-right: 10px;
 }
