@@ -3,8 +3,8 @@ html::-webkit-scrollbar {
 }
 
 html {
-  -ms-overflow-style: none;  
-  scrollbar-width: none;  
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }
 
 main {
@@ -75,4 +75,20 @@ table th {
 .logo {
   max-height: 5rem;
   padding-right: 10px;
+}
+
+.image-container {
+  position: relative;
+  width: 100%;
+  padding-top: 75%; 
+  overflow: hidden;
+}
+
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain; 
 }
