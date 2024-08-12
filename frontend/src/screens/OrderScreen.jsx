@@ -18,6 +18,7 @@ import {
   useGetOrderDetailsQuery,
   usePayOrderMutation,
   useGetPayPalClientIdQuery,
+  useDeliverOrderMutation
 } from "../slices/ordersApiSlice";
 
 const OrderScreen = () => {
@@ -31,6 +32,8 @@ const OrderScreen = () => {
   } = useGetOrderDetailsQuery(orderId);
 
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation();
+
+  const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
 
   const [{ isPending }, paypalDispatch] = usePayPalScriptReducer();
 
@@ -98,6 +101,16 @@ const OrderScreen = () => {
     })
   }
 
+  const deliverOrderHandler = async () => {
+    try {
+      await deliverOrder(orderId);
+      refetch();
+      toast.success('Order shipped');
+    } catch (err) {
+      toast.error(err?.data?.message || err.message)
+    }
+  }
+
   return isLoading ? (
     <Loader />
   ) : error ? (
@@ -108,6 +121,20 @@ const OrderScreen = () => {
       <Row>
         <Col md={8}>
           <ListGroup variant="flush">
+        
+            <ListGroup.Item>
+              <h2>Payment Method</h2>
+              <p>
+                <strong>Method: </strong>
+                {order.paymentMethod}
+              </p>
+              {order.isPaid ? (
+                <Message variant="success">Paid on {order.paidAt}</Message>
+              ) : (
+                <Message variant="danger">Not Paid</Message>
+              )}
+            </ListGroup.Item>
+
             <ListGroup.Item>
               <h2>Shipping</h2>
               <p>
@@ -123,23 +150,10 @@ const OrderScreen = () => {
               </p>
               {order.isDelivered ? (
                 <Message variant="success">
-                  Delivered on {order.deliveredAt}
+                  Shipped on {order.deliveredAt}
                 </Message>
               ) : (
-                <Message variant="danger">Not Delivered</Message>
-              )}
-            </ListGroup.Item>
-
-            <ListGroup.Item>
-              <h2>Payment Method</h2>
-              <p>
-                <strong>Method: </strong>
-                {order.paymentMethod}
-              </p>
-              {order.isPaid ? (
-                <Message variant="success">Paid on {order.paidAt}</Message>
-              ) : (
-                <Message variant="danger">Not Paid</Message>
+                <Message variant="danger">Not Shipped</Message>
               )}
             </ListGroup.Item>
 
@@ -213,14 +227,20 @@ const OrderScreen = () => {
                   )}
                 </ListGroup.Item>
               )}
-              {/* MARK AS DELIVERED PLACEHOLDER */}
+
+              {loadingDeliver && <Loader />}
+
+              { userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered && (
+                <ListGroup.Item>
+                  <Button type='button' className='btn btn-block' onClick={deliverOrderHandler}>Mark As Shipped</Button>
+                </ListGroup.Item>
+              )}
+
             </ListGroup>
           </Card>
         </Col>
       </Row>
     </>
   );
-
-  return <div>OrderScreen</div>;
 };
 export default OrderScreen;
