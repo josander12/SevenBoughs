@@ -9,6 +9,8 @@ const Footer = () => {
         <Row>
           <Col className="text-center py-3">
             <p>SevenBoughs &copy; {currentYear}</p>
+            <p>Steve Anderson | stevea@sevenboughs.com | 514-962-5208</p>
+            
           </Col>
         </Row>
       </Container>

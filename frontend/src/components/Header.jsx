@@ -37,6 +37,20 @@ const Header = () => {
             </Navbar.Brand>
           </LinkContainer>
 
+          <LinkContainer
+            to="/about"
+            style={{ color: "white", paddingLeft: "10px" }}
+          >
+            <Nav.Link>Our Story</Nav.Link>
+          </LinkContainer>
+
+          <LinkContainer
+            to="/contact"
+            style={{ color: "white", paddingLeft: "20px" }}
+          >
+            <Nav.Link>Contact Us</Nav.Link>
+          </LinkContainer>
+
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
