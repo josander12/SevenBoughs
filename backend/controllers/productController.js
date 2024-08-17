@@ -1,4 +1,7 @@
-import asyncHandler from '../middleware/asyncHandler.js'
+import path from "path";
+import { existsSync } from "fs";
+import { unlink } from "fs/promises";
+import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 
 // @desc    Fetch all products
@@ -6,50 +9,50 @@ import Product from "../models/productModel.js";
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
   const products = await Product.find({});
-    res.json(products);
- });
+  res.json(products);
+});
 
-
- // @desc   Fetch a product
+// @desc   Fetch a product
 // @route   GET /api/products/:id
 // @access  Public
- const getProductById = asyncHandler(async (req, res) => {
+const getProductById = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
-    if (product) {
-      return res.json(product);
-    } else {
-      res.status(404);
-      throw new Error("Resource not found");
-    }
- });
+  if (product) {
+    return res.json(product);
+  } else {
+    res.status(404);
+    throw new Error("Resource not found");
+  }
+});
 
 // @desc    Create a product
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
   const product = new Product({
-    name: 'Sample Name',
+    name: "Sample Name",
     price: 0,
     user: req.user._id,
-    image: '/images/sample.jpg',
-    brand: 'Sample brand',
-    category: 'Sample category',
+    image: "/images/sample.jpg",
+    brand: "Sample brand",
+    category: "Sample category",
     countInStock: 0,
     numReviews: 0,
-    description: 'Sample description',
-  })
+    description: "Sample description",
+  });
 
   const createdProduct = await product.save();
-  res.status(201).json(createdProduct)
- });
+  res.status(201).json(createdProduct);
+});
 
 // @desc    Update a product
 // @route   PUT /api/products/:id
 // @access  Private/Admin
 
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, countInStock } = req.body;
+  const { name, price, description, image, brand, category, countInStock } =
+    req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -63,11 +66,42 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.countInStock = countInStock;
 
     const updatedProduct = await product.save();
-    res.json(updatedProduct)
+    res.json(updatedProduct);
   } else {
     res.status(404);
-    throw new Error('Resource not found')
+    throw new Error("Resource not found");
   }
- });
+});
 
- export { getProducts, getProductById, createProduct, updateProduct }
+// @desc    Delete a product
+// @route   DELETE /api/products/:id
+// @access  Private/Admin
+
+const deleteProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+
+  console.log(product);
+
+  if (product) {
+    const __dirname = path.resolve();
+    if (product.image.startsWith("/uploads")) {
+      const filePath = path.join(__dirname, product.image);
+      if (existsSync(filePath)) {
+        await unlink(filePath);
+      }
+    }
+    await Product.deleteOne({ _id: product._id });
+    res.status(200).json({ message: "Product deleted" });
+  } else {
+    res.status(404);
+    throw new Error("Resource not found");
+  }
+});
+
+export {
+  getProducts,
+  getProductById,
+  createProduct,
+  updateProduct,
+  deleteProduct,
+};

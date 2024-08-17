@@ -15,19 +15,22 @@ const storage = multer.diskStorage({
   },
 });
 
-function checkFileType(file, cb) {
-  const filetypes = /jpg|jpeg|png/;
-  const extname = filetypes.test(path.example(file.originalname).toLowerCase());
-  const mimetype = filetypes.test(file.mimetype);
+function fileFilter(req, file, cb) {
+  const filetypes = /jpe?g|png|webp/;
+  const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
+
+  const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+  const mimetype = mimetypes.test(file.mimetype);
+
   if (extname && mimetype) {
-    return cb(null, true);
+    cb(null, true);
   } else {
-    cb("Images only!");
+    cb(new Error('Images only!'), false);
   }
 }
 
 const upload = multer({
-  storage,
+  storage, fileFilter
 });
 
 router.post("/", upload.single("image"), (req, res) => {
