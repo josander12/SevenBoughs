@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import Rating from "../components/Rating";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
+import Meta from "../components/Meta";
 import {
   useGetProductDetailsQuery,
   useCreateReviewMutation,
@@ -22,6 +23,10 @@ import {
 import { addToCart } from "../slices/cartSlice";
 
 const ProductScreen = () => {
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   const { id: productId } = useParams();
 
   const dispatch = useDispatch();
@@ -81,6 +86,7 @@ const ProductScreen = () => {
         </Message>
       ) : (
         <>
+          <Meta title={product.name}/>
           <Row>
             <Col md={5}>
               <Image src={product.image} alt={product.name} fluid />
