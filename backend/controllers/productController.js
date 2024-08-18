@@ -8,8 +8,14 @@ import Product from "../models/productModel.js";
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({});
-  res.json(products);
+  const pageSize = 8;
+  const page = Number(req.query.pageNumber) || 1;
+  const count = await Product.countDocuments();
+
+  const products = await Product.find({})
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+  res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 
 // @desc   Fetch a product
@@ -81,6 +87,7 @@ const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (product) {
+    res.status(400);
     const __dirname = path.resolve();
     if (product.image.startsWith("/uploads")) {
       const filePath = path.join(__dirname, product.image);

@@ -1,9 +1,11 @@
 import { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col, Image } from "react-bootstrap";
-import { FaEdit, FaTrash } from "react-icons/fa";
+import { FaEdit, FaTrash, FaRegEdit, FaTrashAlt } from "react-icons/fa";
+import { useParams } from "react-router-dom";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
+import Paginate from "../../components/Paginate";
 import { toast } from "react-toastify";
 import {
   useGetProductsQuery,
@@ -12,11 +14,13 @@ import {
 } from "../../slices/productsApiSlice";
 
 const ProductListScreen = () => {
+  const {pageNumber} = useParams()
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data: products, isLoading, error, refetch } = useGetProductsQuery();
+  const { data, isLoading, error, refetch } = useGetProductsQuery({pageNumber});
 
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation();
@@ -27,7 +31,7 @@ const ProductListScreen = () => {
   const deleteHandler = async (id, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       try {
-        await deleteProduct(id);
+        await deleteProduct(id).unwrap();
         toast.success("Product deleted");
         refetch();
       } catch (err) {
@@ -82,34 +86,47 @@ const ProductListScreen = () => {
               </tr>
             </thead>
             <tbody>
-              {products.map((product) => (
+              {data.products.map((product) => (
                 <tr key={product._id}>
-                  <td>
-                    {product._id}
-                  </td>
+                  <td>{product._id}</td>
                   <td>{product.name}</td>
-                  <td><Image src={product.image} alt={product.name} fluid rounded style={{maxHeight: "3em"}}/></td>
+                  <td>
+                    <Image
+                      src={product.image}
+                      alt={product.name}
+                      fluid
+                      rounded
+                      style={{ maxHeight: "3em" }}
+                    />
+                  </td>
                   <td>${product.price}</td>
                   <td>{product.category}</td>
                   <td>{product.brand}</td>
                   <td>
                     <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                      <Button variant="light" className="btn-sm mx-2">
+                      <Button variant="primary" className="btn-sm mx-2">
                         <FaEdit />
                       </Button>
                     </LinkContainer>
+                    <Button variant="primary" className="btn-sm">
+                      <FaRegEdit />
+                    </Button>
                     <Button
                       variant="danger"
-                      className="btn-sm"
-                      onClick={() => deleteHandler(product._id, (product.name))}
+                      className="btn-sm mx-2"
+                      onClick={() => deleteHandler(product._id, product.name)}
                     >
                       <FaTrash style={{ color: "white" }} />
+                    </Button>
+                    <Button variant="danger" className="btn-sm my-2">
+                      <FaTrashAlt style={{ color: "white" }} />
                     </Button>
                   </td>
                 </tr>
               ))}
             </tbody>
           </Table>
+          <Paginate pages={data.pages} page={data.page} isAdmin={true} />
         </>
       )}
     </>

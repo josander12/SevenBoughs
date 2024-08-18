@@ -17,10 +17,11 @@ const UserListScreen = () => {
   const deleteHandler = async (id, name) => {
     if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       try {
-        await deleteUser(id);
-        toast.success("User deleted");
+        await deleteUser(id).unwrap();
+        toast.success("User successfully deleted");
         refetch();
       } catch (err) {
+        console.log(err);
         toast.error(err?.data.message || err.error);
       }
     }
@@ -63,7 +64,7 @@ const UserListScreen = () => {
 
                 <td>
                   <LinkContainer to={`/admin/user/${user._id}/edit`}>
-                    <Button variant="light" className="btn-sm">
+                    <Button variant="primary" className="btn-sm mx-2">
                       <FaUserEdit />
                     </Button>
                   </LinkContainer>
