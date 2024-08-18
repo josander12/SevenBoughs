@@ -70,7 +70,7 @@ const OrderScreen = () => {
     });
   }
 
-  async function onApproveTest() {
+  async function onManualApprove() {
     await payOrder({ orderId, details: { payer: {} } });
     refetch();
     toast.success("Payment successful");
@@ -204,25 +204,28 @@ const OrderScreen = () => {
                     <Loader />
                   ) : (
                     <div>
-                      <Button
-                        onClick={onApproveTest}
-                        style={{ marginBottom: "10px" }}
-                      >
-                        Test Pay Order
-                      </Button>
-                      <div>
-                        <PayPalButtons
-                          createOrder={createOrder}
-                          onApprove={onApprove}
-                          onError={onError}
-                        ></PayPalButtons>
-                      </div>
+                      <PayPalButtons
+                        createOrder={createOrder}
+                        onApprove={onApprove}
+                        onError={onError}
+                      ></PayPalButtons>
                     </div>
                   )}
                 </ListGroup.Item>
               )}
 
               {loadingDeliver && <Loader />}
+
+              {userInfo && userInfo.isAdmin && !order.isPaid && (
+                <ListGroup.Item>
+                  <Button
+                    onClick={onManualApprove}
+                    style={{ marginBottom: "10px" }}
+                  >
+                    Mark Order as Paid
+                  </Button>
+                </ListGroup.Item>
+              )}
 
               {userInfo &&
                 userInfo.isAdmin &&

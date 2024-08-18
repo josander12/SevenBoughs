@@ -7,7 +7,6 @@ import {
   Image,
   Form,
   Button,
-  ButtonGroup,
   Card,
 } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
