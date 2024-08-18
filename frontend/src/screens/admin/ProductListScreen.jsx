@@ -14,13 +14,15 @@ import {
 } from "../../slices/productsApiSlice";
 
 const ProductListScreen = () => {
-  const {pageNumber} = useParams()
+  const { pageNumber } = useParams();
 
   useEffect(() => {
     window.scrollTo(0, 0);
   }, []);
 
-  const { data, isLoading, error, refetch } = useGetProductsQuery({pageNumber});
+  const { data, isLoading, error, refetch } = useGetProductsQuery({
+    pageNumber,
+  });
 
   const [createProduct, { isLoading: loadingCreate }] =
     useCreateProductMutation();
