@@ -24,8 +24,8 @@ const ProductListScreen = () => {
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
 
-  const deleteHandler = async (id) => {
-    if (window.confirm("Are you sure?")) {
+  const deleteHandler = async (id, name) => {
+    if (window.confirm(`Are you sure you want to delete ${name}?`)) {
       try {
         await deleteProduct(id);
         toast.success("Product deleted");
@@ -101,7 +101,7 @@ const ProductListScreen = () => {
                     <Button
                       variant="danger"
                       className="btn-sm"
-                      onClick={() => deleteHandler(product._id)}
+                      onClick={() => deleteHandler(product._id, (product.name))}
                     >
                       <FaTrash style={{ color: "white" }} />
                     </Button>
