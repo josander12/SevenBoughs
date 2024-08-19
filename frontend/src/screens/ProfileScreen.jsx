@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import Message from "../components/Message";
 import Loader from "../components/Loader";
+import Meta from "../components/Meta";
 import { FaTimes } from "react-icons/fa";
 import { useProfileMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
@@ -52,7 +53,8 @@ const ProfileScreen = () => {
     }
   };
 
-  return (
+  return <>
+    <Meta title="Profile"/>
     <Row>
       <Col md={3}>
         <h2>User Profile</h2>
@@ -82,7 +84,7 @@ const ProfileScreen = () => {
             <Form.Label>Password</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Enter password"
+              placeholder="Enter new password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             ></Form.Control>
@@ -92,7 +94,7 @@ const ProfileScreen = () => {
             <Form.Label>Confirm Password</Form.Label>
             <Form.Control
               type="password"
-              placeholder="Confirm password"
+              placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
             ></Form.Control>
@@ -158,6 +160,6 @@ const ProfileScreen = () => {
         )}
       </Col>
     </Row>
-  );
+  </>
 };
 export default ProfileScreen;

@@ -20,7 +20,7 @@ export const sendContactEmail = async (req, res) => {
       from: process.env.EMAIL_USER,
       to: process.env.EMAIL_TO, // Your email address to receive the messages
       subject: `Contact Form Submission from ${name}`,
-      text: `Message: ${message}.
+      text: `Message: ${message}
       
       Respond to: ${email}`,
     };

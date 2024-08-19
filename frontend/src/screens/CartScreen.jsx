@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { FaTrash } from "react-icons/fa";
 import Message from "../components/Message";
+import Meta from "../components/Meta";
 import { addToCart, removeFromCart } from "../slices/cartSlice";
 
 const CartScreen = () => {
@@ -36,7 +37,8 @@ const CartScreen = () => {
     navigate("/");
   };
 
-  return (
+  return <>
+    <Meta title="Shopping Cart"/>
     <Row>
       <Col md={8}>
         <h1 style={{ marginBottom: "20px" }}>Shopping Cart</h1>
@@ -127,7 +129,7 @@ const CartScreen = () => {
         </Card>
       </Col>
     </Row>
-  );
+    </>
 };
 
 export default CartScreen;

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col, Image } from "react-bootstrap";
-import { FaEdit, FaTrash, FaRegEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
@@ -93,34 +93,29 @@ const ProductListScreen = () => {
                   <td>{product._id}</td>
                   <td>{product.name}</td>
                   <td>
-                    <Image
-                      src={product.image}
-                      alt={product.name}
-                      fluid
-                      rounded
-                      style={{ maxHeight: "3em" }}
-                    />
+                    <LinkContainer to={`/product/${product._id}`} style={{ maxHeight: "3em" }}>
+                      <Image
+                        src={product.image}
+                        alt={product.name}
+                        fluid
+                        rounded
+                      />
+                    </LinkContainer>
                   </td>
                   <td>${product.price}</td>
                   <td>{product.category}</td>
                   <td>{product.brand}</td>
                   <td>
                     <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                      <Button variant="primary" className="btn-sm mx-2">
+                      <Button variant="primary" className="btn-sm mx-1">
                         <FaEdit />
                       </Button>
                     </LinkContainer>
-                    <Button variant="primary" className="btn-sm">
-                      <FaRegEdit />
-                    </Button>
                     <Button
                       variant="danger"
-                      className="btn-sm mx-2"
+                      className="btn-sm mx-1 my-2"
                       onClick={() => deleteHandler(product._id, product.name)}
                     >
-                      <FaTrash style={{ color: "white" }} />
-                    </Button>
-                    <Button variant="danger" className="btn-sm my-2">
                       <FaTrashAlt style={{ color: "white" }} />
                     </Button>
                   </td>
