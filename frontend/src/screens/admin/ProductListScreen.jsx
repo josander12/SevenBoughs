@@ -72,7 +72,7 @@ const ProductListScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error}</Message>
+        <Message variant="danger">{error.data.message}</Message>
       ) : (
         <>
           <Table striped hover responsive className="table-sm">
@@ -93,7 +93,10 @@ const ProductListScreen = () => {
                   <td>{product._id}</td>
                   <td>{product.name}</td>
                   <td>
-                    <LinkContainer to={`/product/${product._id}`} style={{ maxHeight: "3em" }}>
+                    <LinkContainer
+                      to={`/product/${product._id}`}
+                      style={{ maxHeight: "3em" }}
+                    >
                       <Image
                         src={product.image}
                         alt={product.name}
