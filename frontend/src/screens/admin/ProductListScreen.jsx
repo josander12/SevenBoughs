@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col, Image } from "react-bootstrap";
-import { FaEdit, FaTrashAlt } from "react-icons/fa";
+import { FaEdit, FaTrash, FaRegEdit, FaTrashAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
@@ -72,7 +72,7 @@ const ProductListScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error.data.message}</Message>
+        <Message variant="danger">{error}</Message>
       ) : (
         <>
           <Table striped hover responsive className="table-sm">
@@ -93,10 +93,7 @@ const ProductListScreen = () => {
                   <td>{product._id}</td>
                   <td>{product.name}</td>
                   <td>
-                    <LinkContainer
-                      to={`/product/${product._id}`}
-                      style={{ maxHeight: "3em" }}
-                    >
+                    <LinkContainer to={`/product/${product._id}`} style={{ maxHeight: "3em" }}>
                       <Image
                         src={product.image}
                         alt={product.name}
@@ -110,15 +107,21 @@ const ProductListScreen = () => {
                   <td>{product.brand}</td>
                   <td>
                     <LinkContainer to={`/admin/product/${product._id}/edit`}>
-                      <Button variant="primary" className="btn-sm mx-1">
+                      <Button variant="primary" className="btn-sm mx-2">
                         <FaEdit />
                       </Button>
                     </LinkContainer>
+                    <Button variant="primary" className="btn-sm">
+                      <FaRegEdit />
+                    </Button>
                     <Button
                       variant="danger"
-                      className="btn-sm mx-1 my-2"
+                      className="btn-sm mx-2"
                       onClick={() => deleteHandler(product._id, product.name)}
                     >
+                      <FaTrash style={{ color: "white" }} />
+                    </Button>
+                    <Button variant="danger" className="btn-sm my-2">
                       <FaTrashAlt style={{ color: "white" }} />
                     </Button>
                   </td>

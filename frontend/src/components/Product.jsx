@@ -4,7 +4,7 @@ import Rating from "./Rating";
 
 const Product = ({ product }) => {
   return (
-    <Card className="my-3 p-3 rounded">
+    <Card className="my-3 p-3 rounded" >
       <Link to={`/product/${product._id}`}>
         <div className="image-container">
           <Card.Img src={product.image} variant="top" className="image" />
@@ -17,18 +17,13 @@ const Product = ({ product }) => {
             <strong>{product.name}</strong>
           </Card.Title>
         </Link>
-        <div style={{ height: "25px" }}>
-          {!product.rating ? (
-            ""
-          ) : (
-            <Card.Text as="div">
-              <Rating
-                value={product.rating}
-                text={`${product.numReviews} reviews`}
-              ></Rating>
-            </Card.Text>
-          )}
-        </div>
+
+        <Card.Text as="div">
+          <Rating
+            value={product.rating}
+            text={`${product.numReviews} reviews`}
+          ></Rating>
+        </Card.Text>
 
         <Card.Text as="h3">${product.price}</Card.Text>
       </Card.Body>
