@@ -160,10 +160,11 @@ const ProductScreen = () => {
                     <Button
                       className="btn-block"
                       type="button"
-                      disabled={product.countInStock === 0}
-                      onClick={addToCartHandler}
+                      // disabled={product.countInStock === 0}
+                      disabled={true}
+                      onClick={addToCartHandler} 
                     >
-                      Add To Cart
+                      Add To Cart - Coming Soon
                     </Button>
                   </ListGroup.Item>
                 </ListGroup>
