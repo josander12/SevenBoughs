@@ -33,10 +33,10 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: {
+    image: [{
       type: String,
       required: true,
-    },
+    }],
     brand: {
       type: String,
       required: true,

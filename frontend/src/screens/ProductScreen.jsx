@@ -44,6 +44,11 @@ const ProductScreen = () => {
     error,
   } = useGetProductDetailsQuery(productId);
 
+
+  // THIS IS JUST FOR TESTING - REMOVE
+  console.log(`This is the product: ${JSON.stringify(product)}`)
+  // THIS IS THE END OF TESTING - REMOVE
+
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
 
