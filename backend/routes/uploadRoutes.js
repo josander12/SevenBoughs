@@ -25,18 +25,22 @@ function fileFilter(req, file, cb) {
   if (extname && mimetype) {
     cb(null, true);
   } else {
-    cb(new Error('Images only!'), false);
+    cb(new Error("Images only!"), false);
   }
 }
 
 const upload = multer({
-  storage, fileFilter
+  storage,
+  fileFilter,
 });
 
-router.post("/", upload.single("image"), (req, res) => {
+router.post("/", upload.array("image", 10), (req, res) => {
+  const imagePaths = req.files.map((file) => `/${file.path}`);
+  console.log("Image Paths:", imagePaths); // Log the image paths
+
   res.send({
-    message: "Image Uploaded",
-    image: `/${req.file.path}`,
+    message: "Images Uploaded",
+    images: imagePaths,
   });
 });
 

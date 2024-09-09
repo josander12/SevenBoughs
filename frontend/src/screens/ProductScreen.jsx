@@ -9,6 +9,7 @@ import {
   Card,
   Button,
   Form,
+  Carousel,
 } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -43,11 +44,6 @@ const ProductScreen = () => {
     refetch,
     error,
   } = useGetProductDetailsQuery(productId);
-
-
-  // THIS IS JUST FOR TESTING - REMOVE
-  console.log(`This is the product: ${JSON.stringify(product)}`)
-  // THIS IS THE END OF TESTING - REMOVE
 
   const [createReview, { isLoading: loadingProductReview }] =
     useCreateReviewMutation();
@@ -91,10 +87,25 @@ const ProductScreen = () => {
         </Message>
       ) : (
         <>
-          <Meta title={product.name}/>
+          <Meta title={product.name} />
           <Row>
             <Col md={5}>
-              <Image src={product.image} alt={product.name} fluid />
+              {product.image.length < 2 ? (
+                <Image src={product.image[0]} alt={product.name} fluid />
+              ) : (
+                <Carousel>
+                  {product.image.map((imgUrl, index) => (
+                    <Carousel.Item>
+                      <Image
+                        key={index}
+                        src={imgUrl}
+                        alt={`${product.name} ${index}`}
+                        fluid
+                      />
+                    </Carousel.Item>
+                  ))}
+                </Carousel>
+              )}
             </Col>
             <Col md={4}>
               <ListGroup variant="flush">
@@ -167,7 +178,7 @@ const ProductScreen = () => {
                       type="button"
                       // disabled={product.countInStock === 0}
                       disabled={true}
-                      onClick={addToCartHandler} 
+                      onClick={addToCartHandler}
                     >
                       Add To Cart - Coming Soon
                     </Button>

@@ -98,7 +98,7 @@ const ProductListScreen = () => {
                       style={{ maxHeight: "3em" }}
                     >
                       <Image
-                        src={product.image}
+                        src={product.image[0]}
                         alt={product.name}
                         fluid
                         rounded

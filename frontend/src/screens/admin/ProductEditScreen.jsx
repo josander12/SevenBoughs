@@ -16,7 +16,7 @@ const ProductEditScreen = () => {
 
   const [name, setName] = useState("");
   const [price, setPrice] = useState("");
-  const [image, setImage] = useState("");
+  const [image, setImage] = useState([]); // Change to array
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
@@ -41,7 +41,7 @@ const ProductEditScreen = () => {
     if (product) {
       setName(product.name);
       setPrice(product.price);
-      setImage(product.image);
+      setImage(product.image || []); // Ensure image is an array
       setBrand(product.brand);
       setCategory(product.category);
       setCountInStock(product.countInStock);
@@ -55,7 +55,7 @@ const ProductEditScreen = () => {
       productId,
       name,
       price,
-      image,
+      image, // Array of images
       brand,
       category,
       countInStock,
@@ -73,12 +73,20 @@ const ProductEditScreen = () => {
   };
 
   const uploadFileHandler = async (e) => {
+    const files = Array.from(e.target.files); // Convert FileList to an array
     const formData = new FormData();
-    formData.append("image", e.target.files[0]);
+
+    // Append each file to the FormData
+    files.forEach((file) => formData.append("image", file));
+
     try {
       const res = await uploadProductImage(formData).unwrap();
-      // toast.success(res.message);
-      setImage(res.image);
+
+      if (Array.isArray(res.images)) {
+        setImage(res.images);
+      } else {
+        toast.error("Unexpected response format");
+      }
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
@@ -124,12 +132,13 @@ const ProductEditScreen = () => {
               <Form.Control
                 type="text"
                 placeholder="Enter image url"
-                value={image}
-                onChange={(e) => setImage}
+                value={image.join(", ")} // Display the image URLs as a comma-separated string
+                readOnly
               ></Form.Control>
               <Form.Control
                 type="file"
-                label="Choose file"
+                label="Choose files"
+                multiple // Allow multiple file uploads
                 onChange={uploadFileHandler}
               ></Form.Control>
             </Form.Group>
