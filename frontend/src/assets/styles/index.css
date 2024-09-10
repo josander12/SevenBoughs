@@ -96,3 +96,12 @@ table th {
 .text {
   color: white;
 }
+
+.links {
+  color: white;
+  padding: 10px;
+}
+
+.links:hover {
+  color: white;
+}

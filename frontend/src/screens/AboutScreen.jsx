@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import profilePic from "../assets/profile.jpg";
 import familyPic from "../assets/family.jpg";
+import Meta from "../components/Meta";
 
 const AboutScreen = () => {
   useEffect(() => {
@@ -18,6 +19,7 @@ const AboutScreen = () => {
   });
   return (
     <>
+    <Meta title="About Us" />
       <h1>About Us</h1>
       <hr />
       <Row>

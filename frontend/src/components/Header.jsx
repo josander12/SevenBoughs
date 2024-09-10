@@ -40,17 +40,11 @@ const Header = () => {
             </Navbar.Brand>
           </LinkContainer>
 
-          <LinkContainer
-            to="/about"
-            style={{ color: "white", paddingLeft: "10px" }}
-          >
+          <LinkContainer to="/about" className="links">
             <Nav.Link>Our Story</Nav.Link>
           </LinkContainer>
 
-          <LinkContainer
-            to="/contact"
-            style={{ color: "white", paddingLeft: "20px" }}
-          >
+          <LinkContainer to="/contact" className="links">
             <Nav.Link>Contact Us</Nav.Link>
           </LinkContainer>
 

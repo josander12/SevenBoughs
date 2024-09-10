@@ -36,7 +36,7 @@ const upload = multer({
 
 router.post("/", upload.array("image", 10), (req, res) => {
   const imagePaths = req.files.map((file) => `/${file.path}`);
-  console.log("Image Paths:", imagePaths); // Log the image paths
+  
 
   res.send({
     message: "Images Uploaded",
