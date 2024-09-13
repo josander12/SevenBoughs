@@ -105,3 +105,9 @@ table th {
 .links:hover {
   color: white;
 }
+
+.links:active,
+.links:focus {
+  color: white;
+  font-weight: bold;
+}
