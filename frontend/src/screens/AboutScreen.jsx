@@ -41,7 +41,8 @@ const AboutScreen = () => {
             <li>Integrity - Every piece we create is built as if it were for our own family, and we expect it to be able to last a lifetime or more.</li>
             <li>Service - From standard to custom orders, we utilize a variety of wood species and finishes to meet your needs. We aim to please!</li>
           </ol>
-          <p style={{padding:"10px"}}>Welcome to Seven Boughs Woodworking.</p>
+          <p>Located in lovely La Grande, Oregon, we look forward to serving you wherever you are.</p>
+          <p style={{paddingBottom:"10px"}}>Welcome to Seven Boughs Woodworking.</p>
 
         </Col>
         <Col md={2}>

@@ -143,7 +143,7 @@ const ProductScreen = () => {
                         <strong>
                           {product.countInStock > 0
                             ? "In Stock"
-                            : "Out Of Stock"}
+                            : "Built When Ordered"}
                         </strong>
                       </Col>
                     </Row>
