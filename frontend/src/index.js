@@ -33,16 +33,18 @@ import ProductListScreen from "./screens/admin/ProductListScreen.jsx";
 import ProductEditScreen from "./screens/admin/ProductEditScreen.jsx";
 import UserListScreen from "./screens/admin/UserListScreen.jsx";
 import UserEditScreen from "./screens/admin/UserEditScreen.jsx";
+import ShopScreen from "./screens/ShopScreen.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
-      <Route index={true} path="/" element={<HomeScreen />} />
-      <Route path="/search/:keyword" element={<HomeScreen />} />
-      <Route path="/page/:pageNumber" element={<HomeScreen />} />
+      <Route index element={<HomeScreen />} />
+      <Route path="/shop" element={<ShopScreen />} />
+      <Route path="/search/:keyword" element={<ShopScreen />} />
+      <Route path="/page/:pageNumber" element={<ShopScreen />} />
       <Route
         path="/search/:keyword/page/:pageNumber"
-        element={<HomeScreen />}
+        element={<ShopScreen />}
       />
       <Route path="/product/:id" element={<ProductScreen />} />
       <Route path="/cart" element={<CartScreen />} />

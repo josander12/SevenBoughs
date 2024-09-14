@@ -13,7 +13,7 @@ const SearchBox = () => {
       setKeyword("");
       navigate(`/search/${keyword}`);
     } else {
-      navigate("/");
+      navigate("/shop");
     }
   };
 

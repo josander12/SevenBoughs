@@ -1,12 +1,6 @@
 import { useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
 import { useParams, Link } from "react-router-dom";
-import Product from "../components/Product";
-import { useGetProductsQuery } from "../slices/productsApiSlice";
-import Loader from "../components/Loader";
-import Message from "../components/Message";
-import Paginate from "../components/Paginate";
-import ProductCarousel from "../components/ProductCarousel";
 import Meta from "../components/Meta";
 
 const HomeScreen = () => {
@@ -14,46 +8,49 @@ const HomeScreen = () => {
     window.scrollTo(0, 0);
   });
 
-  const { keyword, pageNumber } = useParams();
-  const { data, isLoading, error } = useGetProductsQuery({
-    keyword,
-    pageNumber,
-  });
-
   return (
-    <>
-      {!keyword && (pageNumber <= 1 || !pageNumber) ? (
-        <ProductCarousel />
-      ) : (
-        <Link to="/" className="btn btn-light mb-4">
-          Go Back
-        </Link>
-      )}
-      {isLoading ? (
-        <Loader />
-      ) : error ? (
-        <Message variant="danger">
-          {error?.data?.message || error.error}
-        </Message>
-      ) : (
-        <>
-          <Meta />
-          <h1>Latest Products</h1>
-          <Row>
-            {data.products.map((product) => (
-              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                <Product product={product} />
-              </Col>
-            ))}
-          </Row>
-          <Paginate
-            pages={data.pages}
-            page={data.page}
-            keyword={keyword ? keyword : ""}
-          />
-        </>
-      )}
-    </>
+    <div className="home-screen-text">
+      <Meta title="Seven Boughs" />
+      <Row>
+        <Col md={2} />
+        <Col md={8}>
+          <h1>Welcome to Seven Boughs Woodworking.</h1>
+          <p style={{ paddingTop: "20px" }}>
+            {" "}
+            We focus our efforts on custom handcrafted projects to meet your
+            specific requirements. Please reach out to us via phone or email to
+            discuss your next project!
+          </p>
+          <p>
+            We also have a number of standard items listed for sale in our shop.
+            These items are also handcrafted and are fully customizable with the
+            final price varying based on the requested customizations.
+          </p>
+          <p>
+            If you'd like a customized piece, please reach out in the "contact
+            us" portion of the webpage or by phone. Each custom piece will have
+            a variable delivery time, based on current workload, availability of
+            materials, and complexity of the project. Also, unless noted
+            otherwise in the product description, shipping has been included in
+            the displayed costs and local deliveries are free.
+          </p>
+        </Col>
+      </Row>
+
+      <Row style={{paddingTop: "20px"}}>
+        <Col md={3} />
+        <Col md={2}>
+          <Link className="btn btn-dark home-screen-links" to="/about">Our Story</Link>
+        </Col>
+        <Col md={2}>
+          <Link className="btn btn-dark home-screen-links" to="/contact">Contact Us</Link>
+        </Col>
+        <Col md={2}>
+          <Link className="btn btn-dark home-screen-links" to="/shop">Shop</Link>
+        </Col>
+        <Col md={3} />
+      </Row>
+    </div>
   );
 };
 export default HomeScreen;
