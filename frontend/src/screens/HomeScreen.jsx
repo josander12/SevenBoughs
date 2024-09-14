@@ -16,7 +16,6 @@ const HomeScreen = () => {
         <Col md={8}>
           <h1>Welcome to Seven Boughs Woodworking.</h1>
           <p style={{ paddingTop: "20px" }}>
-            {" "}
             We focus our efforts on custom handcrafted projects to meet your
             specific requirements. Please reach out to us via phone or email to
             discuss your next project!
@@ -37,16 +36,22 @@ const HomeScreen = () => {
         </Col>
       </Row>
 
-      <Row style={{paddingTop: "20px"}}>
+      <Row style={{ paddingTop: "20px" }}>
         <Col md={3} />
         <Col md={2}>
-          <Link className="btn btn-dark home-screen-links" to="/about">Our Story</Link>
+          <Link className="btn btn-dark home-screen-links" to="/about">
+            Our Story
+          </Link>
         </Col>
         <Col md={2}>
-          <Link className="btn btn-dark home-screen-links" to="/contact">Contact Us</Link>
+          <Link className="btn btn-dark home-screen-links" to="/contact">
+            Contact Us
+          </Link>
         </Col>
         <Col md={2}>
-          <Link className="btn btn-dark home-screen-links" to="/shop">Shop</Link>
+          <Link className="btn btn-dark home-screen-links" to="/shop">
+            Shop
+          </Link>
         </Col>
         <Col md={3} />
       </Row>
