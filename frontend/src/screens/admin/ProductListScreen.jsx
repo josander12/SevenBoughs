@@ -3,6 +3,7 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Table, Button, Row, Col, Image } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { useParams } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import Paginate from "../../components/Paginate";
@@ -10,12 +11,12 @@ import { toast } from "react-toastify";
 import getErrorMessage from "../../utils/getErrorMessage";
 import {
   useGetProductsQuery,
-  useCreateProductMutation,
   useDeleteProductMutation,
 } from "../../slices/productsApiSlice";
 
 const ProductListScreen = () => {
   const { pageNumber } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -24,9 +25,6 @@ const ProductListScreen = () => {
   const { data, isLoading, error, refetch } = useGetProductsQuery({
     pageNumber,
   });
-
-  const [createProduct, { isLoading: loadingCreate }] =
-    useCreateProductMutation();
 
   const [deleteProduct, { isLoading: loadingDelete }] =
     useDeleteProductMutation();
@@ -44,14 +42,7 @@ const ProductListScreen = () => {
   };
 
   const createProductHandler = async () => {
-    if (window.confirm("Are you sure you want to create a new product?")) {
-      try {
-        await createProduct();
-        refetch();
-      } catch (err) {
-        toast.error(getErrorMessage(err, "Failed to create product"));
-      }
-    }
+    navigate("/admin/product/create");
   };
 
   return (
@@ -67,7 +58,6 @@ const ProductListScreen = () => {
         </Col>
       </Row>
 
-      {loadingCreate && <Loader />}
       {loadingDelete && <Loader />}
 
       {isLoading ? (
@@ -85,6 +75,8 @@ const ProductListScreen = () => {
                 <th>PRICE</th>
                 <th>CATEGORY</th>
                 <th>BRAND</th>
+                <th>FEATURED</th>
+                <th>ORDER</th>
                 <th></th>
               </tr>
             </thead>
@@ -109,6 +101,8 @@ const ProductListScreen = () => {
                   <td>${product.price}</td>
                   <td>{product.category}</td>
                   <td>{product.brand}</td>
+                  <td>{product.featured ? "Yes" : "No"}</td>
+                  <td>{product.sortOrder ?? 0}</td>
                   <td>
                     <LinkContainer to={`/admin/product/${product._id}/edit`}>
                       <Button variant="primary" className="btn-sm my-2">

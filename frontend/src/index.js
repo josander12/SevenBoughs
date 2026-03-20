@@ -31,9 +31,14 @@ import AboutScreen from "./screens/AboutScreen.jsx";
 import ContactScreen from "./screens/ContactScreen.jsx";
 import ProductListScreen from "./screens/admin/ProductListScreen.jsx";
 import ProductEditScreen from "./screens/admin/ProductEditScreen.jsx";
+import ProductCreateScreen from "./screens/admin/ProductCreateScreen.jsx";
 import UserListScreen from "./screens/admin/UserListScreen.jsx";
 import UserEditScreen from "./screens/admin/UserEditScreen.jsx";
 import ShopScreen from "./screens/ShopScreen.jsx";
+import GalleryScreen from "./screens/GalleryScreen.jsx";
+import GalleryProjectScreen from "./screens/GalleryProjectScreen.jsx";
+import GalleryProjectListScreen from "./screens/admin/GalleryProjectListScreen.jsx";
+import GalleryProjectEditScreen from "./screens/admin/GalleryProjectEditScreen.jsx";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -52,6 +57,8 @@ const router = createBrowserRouter(
       <Route path="/register" element={<RegisterScreen />} />
       <Route path="/about" element={<AboutScreen />} />
       <Route path="/contact" element={<ContactScreen />} />
+      <Route path="/gallery" element={<GalleryScreen />} />
+      <Route path="/gallery/:id" element={<GalleryProjectScreen />} />
 
       <Route path="" element={<PrivateRoute />}>
         <Route path="/shipping" element={<ShippingScreen />} />
@@ -68,9 +75,18 @@ const router = createBrowserRouter(
           path="/admin/productlist/:pageNumber"
           element={<ProductListScreen />}
         />
+        <Route path="/admin/product/create" element={<ProductCreateScreen />} />
         <Route path="/admin/product/:id/edit" element={<ProductEditScreen />} />
         <Route path="/admin/userlist" element={<UserListScreen />} />
         <Route path="/admin/user/:id/edit" element={<UserEditScreen />} />
+        <Route
+          path="/admin/galleryprojects"
+          element={<GalleryProjectListScreen />}
+        />
+        <Route
+          path="/admin/galleryproject/:id/edit"
+          element={<GalleryProjectEditScreen />}
+        />
       </Route>
     </Route>
   )

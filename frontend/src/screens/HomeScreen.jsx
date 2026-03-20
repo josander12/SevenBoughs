@@ -16,23 +16,30 @@ const HomeScreen = () => {
         <Col md={8}>
           <h1 style={{fontWeight:"100"}}>Welcome to Seven Boughs Woodworking.</h1>
           <p style={{ paddingTop: "20px" }}>
-            We focus our efforts on custom handcrafted projects to meet your
-            specific requirements. Please reach out to us via phone or email to
-            discuss your next project!
+            We focus our efforts on custom, handcrafted projects to meet your
+            specific requirements. Our work includes furniture, cabinets,
+            built-ins, architectural features, and more. Please reach out to us
+            via phone, email, our webpage, or facebook (links below) to discuss
+            your next project!
           </p>
           <p>
-            We also have a number of standard items listed for sale in our shop.
-            These items are also handcrafted and are fully customizable with the
-            final price varying based on the requested customizations.
+            Each custom piece will have a variable delivery time, based on
+            current workload, availability of materials, and complexity of the
+            project. All our products include a lifetime warranty under normal
+            use. If something we made ever fails because of a defect, we'll fix
+            it. Regular care and normal wear are excluded, but we build our
+            pieces to be easy to maintain.
           </p>
           <p>
-            If you'd like a customized piece, please reach out in the "contact
-            us" portion of the webpage or by phone. Each custom piece will have
-            a variable delivery time, based on current workload, availability of
-            materials, and complexity of the project. Also, unless noted
-            otherwise in the product description, shipping has been included in
-            the displayed costs and local deliveries are free.
+            We also have a number of items listed for sale in our shop. These
+            items are also handcrafted and are fully customizable with the final
+            price varying based on the requested customizations.
           </p>
+          <p>We're excited to build something for you that lasts!</p>
+          <p>
+            <em>Family ~ Service ~ Integrity</em>
+          </p>
+          <p>Licensed, bonded and insured (CCB#256039)</p>
         </Col>
       </Row>
 

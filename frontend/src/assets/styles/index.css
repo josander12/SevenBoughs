@@ -131,6 +131,29 @@ table th {
   color: white;
 }
 
+.footer-facebook-link {
+  color: inherit;
+  opacity: 0.75;
+  transition: opacity 0.2s ease;
+}
+
+.footer-facebook-link:hover {
+  opacity: 1;
+  color: #1877f2;
+}
+
+.nav-facebook-link {
+  color: rgba(255, 255, 255, 0.55);
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  transition: color 0.2s ease;
+}
+
+.nav-facebook-link:hover {
+  color: #1877f2;
+}
+
 .home-screen-links {
   color: white;
   font-weight: 100 !important;
@@ -158,6 +181,12 @@ table th {
   .links {
     padding-left: 10px !important;
   }
+
+  .nav-separator {
+    color: rgba(255, 255, 255, 0.35);
+    padding: 0 4px;
+    user-select: none;
+  }
 }
 
 @media (max-width: 991px) {
@@ -171,6 +200,11 @@ table th {
     padding: 0 !important;
     padding-top: 5px !important;
   }
+
+  .nav-separator {
+    display: none;
+  }
+
   .nav-container {
     display: flex;
     flex-direction: column;
@@ -182,5 +216,137 @@ table th {
     flex-direction: column;
     align-items: flex-start;
     margin: 0 !important;
+  }
+}
+
+.gallery-header {
+  margin-bottom: 2rem;
+}
+
+.gallery-header h1 {
+  font-weight: 700;
+}
+
+.gallery-header p {
+  max-width: 700px;
+  color: #4a4a4a;
+}
+
+.gallery-project-card {
+  border: 0;
+  border-radius: 14px;
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.08);
+  overflow: hidden;
+  margin-bottom: 2rem;
+}
+
+.gallery-project-card-clickable {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.gallery-project-card-clickable:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.12);
+}
+
+.gallery-carousel-wrap {
+  background: linear-gradient(135deg, #f4efe6, #e8ddd0);
+}
+
+.gallery-card-image {
+  width: 100%;
+  height: 280px;
+  object-fit: cover;
+}
+
+.gallery-carousel img {
+  width: 100%;
+  height: 420px;
+  object-fit: cover;
+}
+
+.gallery-project-link {
+  color: #1f1f1f;
+  text-decoration: none;
+}
+
+.gallery-project-link:hover {
+  text-decoration: underline;
+}
+
+.gallery-summary-text {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.gallery-detail-hero {
+  margin-bottom: 1.5rem;
+}
+
+.gallery-detail-description {
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+.gallery-meta {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 0.8rem;
+}
+
+.gallery-chip {
+  display: inline-block;
+  background-color: #f0f0f0;
+  border-radius: 999px;
+  padding: 0.2rem 0.75rem;
+  font-size: 0.8rem;
+}
+
+.gallery-featured {
+  background-color: #1f4d3b;
+  color: #fff;
+}
+
+.gallery-admin-preview {
+  width: 84px;
+  height: 60px;
+  object-fit: cover;
+  border-radius: 8px;
+  border: 1px solid #ddd;
+}
+
+.admin-image-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+}
+
+.admin-image-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+}
+
+.admin-main-chip {
+  display: inline-block;
+  font-size: 0.72rem;
+  color: #fff;
+  background-color: #1f4d3b;
+  border-radius: 999px;
+  padding: 0.1rem 0.5rem;
+  width: fit-content;
+}
+
+@media (max-width: 767px) {
+  .gallery-card-image {
+    height: 230px;
+  }
+
+  .gallery-carousel img {
+    height: 260px;
   }
 }

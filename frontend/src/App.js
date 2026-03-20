@@ -5,10 +5,15 @@ import 'react-toastify/dist/ReactToastify.css'
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { useLocation } from "react-router-dom";
+import { useEffect } from "react";
 
 
 const App = () => {
   const location = useLocation();
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [location.pathname]);
 
   const isHomePage = location.pathname === '/';
 

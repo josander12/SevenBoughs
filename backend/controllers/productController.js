@@ -15,6 +15,7 @@ const getFallbackProducts = () =>
     ...product,
     _id: (index + 1).toString(16).padStart(24, "0"),
     reviews: product.reviews || [],
+    sortOrder: typeof product.sortOrder === "number" ? product.sortOrder : index,
     createdAt: new Date(0).toISOString(),
     updatedAt: new Date(0).toISOString(),
   }));
@@ -38,6 +39,13 @@ const getProducts = asyncHandler(async (req, res) => {
       );
     });
 
+    filteredProducts.sort(
+      (a, b) =>
+        (Number(b.featured || 0) - Number(a.featured || 0)) ||
+        Number(a.sortOrder || 0) - Number(b.sortOrder || 0) ||
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+    );
+
     const startIndex = pageSize * (page - 1);
     const products = filteredProducts.slice(startIndex, startIndex + pageSize);
     const pages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
@@ -58,12 +66,32 @@ const getProducts = asyncHandler(async (req, res) => {
   try {
     const count = await Product.countDocuments({ ...keyword });
 
-    const products = await Product.find({ ...keyword })
-      .limit(pageSize)
-      .skip(pageSize * (page - 1));
+    const products = await Product.aggregate([
+      { $match: { ...keyword } },
+      {
+        $addFields: {
+          sortOrderSafe: { $ifNull: ["$sortOrder", 0] },
+          featuredSafe: { $ifNull: ["$featured", false] },
+        },
+      },
+      { $sort: { featuredSafe: -1, sortOrderSafe: 1, createdAt: -1 } },
+      { $skip: pageSize * (page - 1) },
+      { $limit: pageSize },
+    ]);
 
-    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+    // Clean up the extra fields we added for sorting
+    const cleanedProducts = products.map(p => {
+      const { sortOrderSafe, featuredSafe, ...rest } = p;
+      return {
+        ...rest,
+        sortOrder: sortOrderSafe,
+        featured: featuredSafe,
+      };
+    });
+
+    res.json({ products: cleanedProducts, page, pages: Math.ceil(count / pageSize) });
   } catch (error) {
+    console.error("Product query error:", error.message);
     const products = getFallbackProducts().slice(0, pageSize);
     res.json({ products, page: 1, pages: 1 });
   }
@@ -98,16 +126,40 @@ const getProductById = asyncHandler(async (req, res) => {
 // @route   POST /api/products
 // @access  Private/Admin
 const createProduct = asyncHandler(async (req, res) => {
+  const {
+    name,
+    price,
+    image,
+    brand,
+    category,
+    countInStock,
+    featured = false,
+    description,
+  } = req.body;
+
+  if (!name || !brand || !category || !description) {
+    res.status(400);
+    throw new Error("Name, brand, category, and description are required");
+  }
+
+  if (!Array.isArray(image) || image.length === 0) {
+    res.status(400);
+    throw new Error("At least one image is required");
+  }
+
   const product = new Product({
-    name: "Sample Name",
-    price: 0,
+    name,
+    price: Number(price),
     user: req.user._id,
-    image: ["/images/sample.jpg"],
-    brand: "Sample brand",
-    category: "Sample category",
-    countInStock: 0,
+    image,
+    brand,
+    category,
+    countInStock: Number(countInStock),
+    sortOrder: Number(sortOrder || 0),
+    featured: Boolean(featuredk),
+    sortOrder: Number(sortOrder || 0),
     numReviews: 0,
-    description: "Sample description",
+    description,
   });
 
   const createdProduct = await product.save();
@@ -119,8 +171,15 @@ const createProduct = asyncHandler(async (req, res) => {
 // @access  Private/Admin
 
 const updateProduct = asyncHandler(async (req, res) => {
-  const { name, price, description, image, brand, category, countInStock } =
-    req.body;
+  const {
+    name,
+    price,
+    description,
+    image,
+    brand,
+    category,
+    featured,
+  } = req.body;
 
   const product = await Product.findById(req.params.id);
 
@@ -132,6 +191,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     product.brand = brand;
     product.category = category;
     product.countInStock = countInStock;
+    product.sortOrder = Number(sortOrder || 0);
+    product.featured = Boolean(featured);
 
     const updatedProduct = await product.save();
     res.json(updatedProduct);

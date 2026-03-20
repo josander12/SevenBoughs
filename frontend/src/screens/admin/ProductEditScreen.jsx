@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Form, Button } from "react-bootstrap";
+import { Form, Button, Image } from "react-bootstrap";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import FormContainer from "../../components/FormContainer";
@@ -20,6 +20,8 @@ const ProductEditScreen = () => {
   const [brand, setBrand] = useState("");
   const [category, setCategory] = useState("");
   const [countInStock, setCountInStock] = useState(0);
+  const [sortOrder, setSortOrder] = useState(0);
+  const [featured, setFeatured] = useState(false);
   const [description, setDescription] = useState("");
 
   const {
@@ -39,18 +41,36 @@ const ProductEditScreen = () => {
 
   useEffect(() => {
     if (product) {
-      setName(product.name);
+      setName(product.name === "Sample Name" ? "" : product.name);
       setPrice(product.price);
-      setImage(product.image || []); // Ensure image is an array
-      setBrand(product.brand);
-      setCategory(product.category);
+      setImage(
+        Array.isArray(product.image) &&
+          product.image.length === 1 &&
+          product.image[0] === "/images/sample.jpg"
+          ? []
+          : product.image || []
+      );
+      setBrand(product.brand === "Sample brand" ? "" : product.brand);
+      setCategory(
+        product.category === "Sample category" ? "" : product.category
+      );
       setCountInStock(product.countInStock);
-      setDescription(product.description);
+      setSortOrder(product.sortOrder || 0);
+      setFeatured(product.featured || false);
+      setDescription(
+        product.description === "Sample description" ? "" : product.description
+      );
     }
   }, [product]);
 
   const submitHandler = async (e) => {
     e.preventDefault();
+
+    if (!image.length) {
+      toast.error("Please upload at least one image");
+      return;
+    }
+
     const updatedProduct = {
       productId,
       name,
@@ -59,6 +79,8 @@ const ProductEditScreen = () => {
       brand,
       category,
       countInStock,
+      featured,
+      sortOrder,
       description,
     };
 
@@ -83,13 +105,21 @@ const ProductEditScreen = () => {
       const res = await uploadProductImage(formData).unwrap();
 
       if (Array.isArray(res.images)) {
-        setImage(res.images);
+        setImage((prev) => [...prev, ...res.images]);
       } else {
         toast.error("Unexpected response format");
       }
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }
+  };
+
+  const setMainImage = (imagePath) => {
+    setImage((prev) => [imagePath, ...prev.filter((img) => img !== imagePath)]);
+  };
+
+  const removeImage = (imagePath) => {
+    setImage((prev) => prev.filter((img) => img !== imagePath));
   };
 
   return (
@@ -111,7 +141,7 @@ const ProductEditScreen = () => {
               <Form.Label>Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter name"
+                placeholder="Sample Name"
                 value={name}
                 onChange={(e) => setName(e.target.value)}
               ></Form.Control>
@@ -131,7 +161,7 @@ const ProductEditScreen = () => {
               <Form.Label>Image</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter image url"
+                placeholder="Sample image path"
                 value={image.join(", ")} // Display the image URLs as a comma-separated string
                 readOnly
               ></Form.Control>
@@ -142,12 +172,45 @@ const ProductEditScreen = () => {
                 onChange={uploadFileHandler}
               ></Form.Control>
             </Form.Group>
+            <div className="d-flex flex-wrap gap-2 my-3">
+              {image.map((imgPath, idx) => (
+                <div key={imgPath} className="admin-image-tile">
+                  <Image
+                    src={imgPath}
+                    alt="product"
+                    className="gallery-admin-preview"
+                  />
+                  <div className="admin-image-actions">
+                    {idx === 0 ? (
+                      <span className="admin-main-chip">Main</span>
+                    ) : (
+                      <Button
+                        variant="link"
+                        size="sm"
+                        className="p-0"
+                        onClick={() => setMainImage(imgPath)}
+                      >
+                        Set Main
+                      </Button>
+                    )}
+                    <Button
+                      variant="link"
+                      size="sm"
+                      className="p-0 text-danger"
+                      onClick={() => removeImage(imgPath)}
+                    >
+                      Remove
+                    </Button>
+                  </div>
+                </div>
+              ))}
+            </div>
             {loadingUpload && <Loader />}
             <Form.Group controlId="brand" className="my-2">
               <Form.Label>Brand</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter brand"
+                placeholder="Sample brand"
                 value={brand}
                 onChange={(e) => setBrand(e.target.value)}
               ></Form.Control>
@@ -163,11 +226,30 @@ const ProductEditScreen = () => {
               ></Form.Control>
             </Form.Group>
 
+            <Form.Group controlId="sortOrder" className="my-2">
+              <Form.Label>Sort Order</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Lower numbers appear first"
+                value={sortOrder}
+                onChange={(e) => setSortOrder(e.target.value)}
+              ></Form.Control>
+            </Form.Group>
+
+            <Form.Group controlId="featured" className="my-2">
+              <Form.Check
+                type="checkbox"
+                label="Featured"
+                checked={featured}
+                onChange={(e) => setFeatured(e.target.checked)}
+              />
+            </Form.Group>
+
             <Form.Group controlId="category" className="my-2">
               <Form.Label>Category</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter category"
+                placeholder="Sample category"
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
               ></Form.Control>
@@ -177,7 +259,7 @@ const ProductEditScreen = () => {
               <Form.Label>Description</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter description"
+                placeholder="Sample description"
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
               ></Form.Control>

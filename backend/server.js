@@ -12,6 +12,7 @@ import userRoutes from "./routes/userRoutes.js";
 import orderRoutes from "./routes/orderRoutes.js";
 import uploadRoutes from "./routes/uploadRoutes.js";
 import contactRoutes from "./routes/contactRoutes.js";
+import galleryProjectRoutes from "./routes/galleryProjectRoutes.js";
 
 const port = process.env.PORT || 5000;
 
@@ -31,6 +32,7 @@ app.use("/api/users", userRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api/upload", uploadRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/galleryprojects", galleryProjectRoutes);
 
 app.get("/api/config/paypal", (req, res) =>
   res.send({ clientId: process.env.PAYPAL_CLIENT_ID })

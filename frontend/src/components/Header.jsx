@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { Badge, Navbar, Nav, Container, NavDropdown } from "react-bootstrap";
-import { FaShoppingCart, FaUser } from "react-icons/fa";
+import { FaShoppingCart, FaUser, FaFacebook } from "react-icons/fa";
 import { LinkContainer } from "react-router-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../slices/usersApiSlice";
@@ -48,17 +48,36 @@ const Header = () => {
                   <Nav.Link>Our Story</Nav.Link>
                 </LinkContainer>
 
-                <LinkContainer to="/contact" className="links">
-                  <Nav.Link>Contact Us</Nav.Link>
+                <span className="nav-separator">|</span>
+
+                <LinkContainer to="/gallery" className="links">
+                  <Nav.Link>Gallery</Nav.Link>
                 </LinkContainer>
+
+                <span className="nav-separator">|</span>
 
                 <LinkContainer to="/shop" className="links">
                   <Nav.Link>Shop</Nav.Link>
+                </LinkContainer>
+
+                <span className="nav-separator">|</span>
+
+                <LinkContainer to="/contact" className="links">
+                  <Nav.Link>Contact Us</Nav.Link>
                 </LinkContainer>
               </div>
 
               <div className="ms-auto">
                 <SearchBox />
+                <a
+                  href="https://www.facebook.com/profile.php?id=61565746715356"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="nav-facebook-link"
+                  aria-label="Seven Boughs on Facebook"
+                >
+                  <FaFacebook size={20} />
+                </a>
                 <LinkContainer to="/cart">
                   <Nav.Link>
                     <FaShoppingCart /> Cart
@@ -95,6 +114,9 @@ const Header = () => {
                     </LinkContainer>
                     <LinkContainer to="/admin/userlist">
                       <NavDropdown.Item>Users</NavDropdown.Item>
+                    </LinkContainer>
+                    <LinkContainer to="/admin/galleryprojects">
+                      <NavDropdown.Item>Gallery</NavDropdown.Item>
                     </LinkContainer>
                   </NavDropdown>
                 )}
