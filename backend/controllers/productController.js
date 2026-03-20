@@ -1,38 +1,89 @@
 import path from "path";
 import { existsSync } from "fs";
 import { unlink } from "fs/promises";
+import mongoose from "mongoose";
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
+import seedProducts from "../data/products.js";
+
+const defaultPageSize = Number(process.env.PAGINATION_LIMIT) || 8;
+
+const isDbConnected = () => mongoose.connection.readyState === 1;
+
+const getFallbackProducts = () =>
+  seedProducts.map((product, index) => ({
+    ...product,
+    _id: (index + 1).toString(16).padStart(24, "0"),
+    reviews: product.reviews || [],
+    createdAt: new Date(0).toISOString(),
+    updatedAt: new Date(0).toISOString(),
+  }));
 
 // @desc    Fetch all products
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
-  const pageSize = process.env.PAGINATION_LIMIT;
+  const pageSize = defaultPageSize;
   const page = Number(req.query.pageNumber) || 1;
+  const keywordText = (req.query.keyword || "").toString().trim();
 
-  const keyword = req.query.keyword
+  if (!isDbConnected()) {
+    const regex = keywordText ? new RegExp(keywordText, "i") : null;
+    const filteredProducts = getFallbackProducts().filter((product) => {
+      if (!regex) return true;
+      return (
+        regex.test(product.name) ||
+        regex.test(product.brand) ||
+        regex.test(product.category)
+      );
+    });
+
+    const startIndex = pageSize * (page - 1);
+    const products = filteredProducts.slice(startIndex, startIndex + pageSize);
+    const pages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
+
+    return res.json({ products, page, pages });
+  }
+
+  const keyword = keywordText
     ? {
         $or: [
-          { name: { $regex: req.query.keyword, $options: "i" } },
-          { brand: { $regex: req.query.keyword, $options: "i" } },
-          { category: { $regex: req.query.keyword, $options: "i" } },
+          { name: { $regex: keywordText, $options: "i" } },
+          { brand: { $regex: keywordText, $options: "i" } },
+          { category: { $regex: keywordText, $options: "i" } },
         ],
       }
     : {};
 
-  const count = await Product.countDocuments({ ...keyword });
+  try {
+    const count = await Product.countDocuments({ ...keyword });
 
-  const products = await Product.find({ ...keyword })
-    .limit(pageSize)
-    .skip(pageSize * (page - 1));
-  res.json({ products, page, pages: Math.ceil(count / pageSize) });
+    const products = await Product.find({ ...keyword })
+      .limit(pageSize)
+      .skip(pageSize * (page - 1));
+
+    res.json({ products, page, pages: Math.ceil(count / pageSize) });
+  } catch (error) {
+    const products = getFallbackProducts().slice(0, pageSize);
+    res.json({ products, page: 1, pages: 1 });
+  }
 });
 
 // @desc   Fetch a product
 // @route   GET /api/products/:id
 // @access  Public
 const getProductById = asyncHandler(async (req, res) => {
+  if (!isDbConnected()) {
+    const product = getFallbackProducts().find((item) => item._id === req.params.id);
+
+    if (product) {
+      return res.json(product);
+    }
+
+    res.status(404);
+    throw new Error("Resource not found");
+  }
+
   const product = await Product.findById(req.params.id);
 
   if (product) {
@@ -51,7 +102,7 @@ const createProduct = asyncHandler(async (req, res) => {
     name: "Sample Name",
     price: 0,
     user: req.user._id,
-    image: "/images/sample.jpg",
+    image: ["/images/sample.jpg"],
     brand: "Sample brand",
     category: "Sample category",
     countInStock: 0,
@@ -98,7 +149,6 @@ const deleteProduct = asyncHandler(async (req, res) => {
   const product = await Product.findById(req.params.id);
 
   if (product) {
-    res.status(400);
     const __dirname = path.resolve();
 
     // Iterate over all images in the product.image array
@@ -165,7 +215,22 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @route   GET /api/products/top
 // @access  Public
 const getTopProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({}).sort({ rating: -1 }).limit(3);
+  if (!isDbConnected()) {
+    const products = getFallbackProducts()
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 3);
+    return res.status(200).json(products);
+  }
+
+  let products = [];
+
+  try {
+    products = await Product.find({}).sort({ rating: -1 }).limit(3);
+  } catch (error) {
+    products = getFallbackProducts()
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, 3);
+  }
 
   res.status(200).json(products);
 });

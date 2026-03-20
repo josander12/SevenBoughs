@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { useSendContactEmailMutation } from "../slices/contactApiSlice";
 import { Row, Col, Container, Button, Form } from "react-bootstrap";
@@ -8,7 +8,7 @@ import Meta from "../components/Meta";
 const ContactScreen = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
-  });
+  }, []);
 
   const navigate = useNavigate();
 
@@ -16,8 +16,7 @@ const ContactScreen = () => {
   const [email, setEmail] = useState("");
   const [message, setMessage] = useState("");
 
-  const [sendContactEmail, { isLoading, error, isSuccess }] =
-    useSendContactEmailMutation();
+  const [sendContactEmail] = useSendContactEmailMutation();
 
   const submitHandler = async (e) => {
     e.preventDefault();

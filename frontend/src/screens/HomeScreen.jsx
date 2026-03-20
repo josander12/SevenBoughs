@@ -1,12 +1,12 @@
 import { useEffect } from "react";
 import { Row, Col } from "react-bootstrap";
-import { useParams, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import Meta from "../components/Meta";
 
 const HomeScreen = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
-  });
+  }, []);
 
   return (
     <div className="home-screen-text">
