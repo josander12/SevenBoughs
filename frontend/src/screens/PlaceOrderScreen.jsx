@@ -8,6 +8,7 @@ import Message from "../components/Message";
 import Loader from "../components/Loader";
 import { useCreateOrderMutation } from "../slices/ordersApiSlice";
 import { clearCartItems } from "../slices/cartSlice";
+import getErrorMessage from "../utils/getErrorMessage";
 
 const PlaceOrderScreen = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const PlaceOrderScreen = () => {
       dispatch(clearCartItems());
       navigate(`/order/${res._id}`);
     } catch (error) {
-      toast.error(error);
+      toast.error(getErrorMessage(error, "Failed to place order"));
     }
   };
 
@@ -133,7 +134,9 @@ const PlaceOrderScreen = () => {
 
               <ListGroup.Item>
                 {error && (
-                  <Message variant="danger">{error.data.message}</Message>
+                  <Message variant="danger">
+                    {getErrorMessage(error, "Failed to place order")}
+                  </Message>
                 )}
               </ListGroup.Item>
 

@@ -34,7 +34,9 @@ const UserListScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error}</Message>
+         <Message variant="danger">
+           {error?.data?.message || error?.error || "Failed to load users"}
+         </Message>
       ) : (
         <Table striped hover responsive className="table-sm">
           <thead>

@@ -7,6 +7,7 @@ import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import Paginate from "../../components/Paginate";
 import { toast } from "react-toastify";
+import getErrorMessage from "../../utils/getErrorMessage";
 import {
   useGetProductsQuery,
   useCreateProductMutation,
@@ -37,7 +38,7 @@ const ProductListScreen = () => {
         toast.success("Product deleted");
         refetch();
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        toast.error(getErrorMessage(err, "Failed to delete product"));
       }
     }
   };
@@ -48,7 +49,7 @@ const ProductListScreen = () => {
         await createProduct();
         refetch();
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        toast.error(getErrorMessage(err, "Failed to create product"));
       }
     }
   };
@@ -72,7 +73,7 @@ const ProductListScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{error.data.message}</Message>
+        <Message variant="danger">{getErrorMessage(error, "Failed to load products")}</Message>
       ) : (
         <>
           <Table striped hover responsive className="table-sm">
