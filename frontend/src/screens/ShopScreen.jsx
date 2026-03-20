@@ -8,6 +8,7 @@ import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import ProductCarousel from "../components/ProductCarousel";
 import Meta from "../components/Meta";
+import getErrorMessage from "../utils/getErrorMessage";
 
 const ShopScreen = () => {
   useEffect(() => {
@@ -34,7 +35,7 @@ const ShopScreen = () => {
           <Loader />
         ) : error ? (
           <Message variant="danger">
-            {error?.data?.message || error.error}
+            {getErrorMessage(error, "Failed to load products")}
           </Message>
         ) : (
           <>

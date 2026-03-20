@@ -12,6 +12,7 @@ import {
   useGetPayPalClientIdQuery,
   useDeliverOrderMutation,
 } from "../slices/ordersApiSlice";
+import getErrorMessage from "../utils/getErrorMessage";
 
 const OrderScreen = () => {
   const { id: orderId } = useParams();
@@ -65,7 +66,7 @@ const OrderScreen = () => {
         refetch();
         toast.success("Payment successful");
       } catch (err) {
-        toast.error(err?.data?.message || err.message);
+        toast.error(getErrorMessage(err, "Payment failed"));
       }
     });
   }
@@ -77,7 +78,7 @@ const OrderScreen = () => {
   }
 
   function onError(err) {
-    toast.error(err.message);
+    toast.error(getErrorMessage(err, "Payment failed"));
   }
 
   function createOrder(data, actions) {
@@ -102,14 +103,14 @@ const OrderScreen = () => {
       refetch();
       toast.success("Order shipped");
     } catch (err) {
-      toast.error(err?.data?.message || err.message);
+        toast.error(getErrorMessage(err, "Failed to update delivery status"));
     }
   };
 
   return isLoading ? (
     <Loader />
   ) : error ? (
-    <Message variant="danger">{error?.data?.message || error.error}</Message>
+    <Message variant="danger">{getErrorMessage(error, "Failed to load order")}</Message>
   ) : (
     <>
       <h1>Order {order._id} </h1>

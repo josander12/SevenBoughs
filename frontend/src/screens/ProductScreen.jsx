@@ -22,6 +22,7 @@ import {
   useCreateReviewMutation,
 } from "../slices/productsApiSlice";
 import { addToCart } from "../slices/cartSlice";
+import getErrorMessage from "../utils/getErrorMessage";
 
 const ProductScreen = () => {
   useEffect(() => {
@@ -69,7 +70,7 @@ const ProductScreen = () => {
       setRating(0);
       setcomment("");
     } catch (err) {
-      toast.error(err?.data?.message || err.error);
+      toast.error(getErrorMessage(err, "Failed to submit review"));
     }
   };
 
@@ -82,9 +83,7 @@ const ProductScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">
-          {error?.data?.message || error.error}
-        </Message>
+        <Message variant="danger">{getErrorMessage(error, "Failed to load product")}</Message>
       ) : (
         <>
           <Meta title={product.name} />

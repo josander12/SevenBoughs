@@ -9,6 +9,7 @@ import { FaTimes } from "react-icons/fa";
 import { useProfileMutation } from "../slices/usersApiSlice";
 import { setCredentials } from "../slices/authSlice";
 import { useGetMyOrdersQuery } from "../slices/ordersApiSlice";
+import getErrorMessage from "../utils/getErrorMessage";
 
 const ProfileScreen = () => {
   const [name, setName] = useState("");
@@ -47,7 +48,7 @@ const ProfileScreen = () => {
         dispatch(setCredentials(res));
         toast.success("Profile updated successfully");
       } catch (err) {
-        toast.error(err?.data?.message || err.error);
+        toast.error(getErrorMessage(err, "Failed to update profile"));
       }
     }
   };
@@ -109,9 +110,7 @@ const ProfileScreen = () => {
         {isLoading ? (
           <Loader />
         ) : error ? (
-          <Message variant="danger">
-            {error?.data?.message || error.error}
-          </Message>
+          <Message variant="danger">{getErrorMessage(error, "Failed to load orders")}</Message>
         ) : (
           <Table striped hover responsive className="table-sm">
             <thead>

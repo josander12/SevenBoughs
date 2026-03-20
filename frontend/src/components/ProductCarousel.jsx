@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import { Carousel, Image, Row, Col } from "react-bootstrap";
 import Message from "./Message";
 import { useGetTopProductsQuery } from "../slices/productsApiSlice";
+import getErrorMessage from "../utils/getErrorMessage";
 
 const ProductCarousel = () => {
   const { data: products, isLoading, error } = useGetTopProductsQuery();
@@ -9,7 +10,9 @@ const ProductCarousel = () => {
   return isLoading ? (
     ""
   ) : error ? (
-    <Message variant="danger">{error}</Message>
+    <Message variant="danger">
+      {getErrorMessage(error, "Failed to load featured products")}
+    </Message>
   ) : (
     <Carousel pause="hover" className="bg-primary mb-4 c-image-container">
       {products.map((product) => (
