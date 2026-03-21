@@ -238,8 +238,8 @@ const ProductEditScreen = () => {
 
             <Form.Group controlId="featured" className="my-2">
               <Form.Check
-                type="checkbox"
-                label="Featured"
+                type="switch"
+                label="Feature this product"
                 checked={featured}
                 onChange={(e) => setFeatured(e.target.checked)}
               />
