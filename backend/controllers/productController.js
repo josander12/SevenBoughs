@@ -285,26 +285,39 @@ const createProductReview = asyncHandler(async (req, res) => {
 // @route   GET /api/products/top
 // @access  Public
 const getTopProducts = asyncHandler(async (req, res) => {
+  const MIN = 3;
+
   if (!isDbConnected()) {
     const fallback = getFallbackProducts();
-    const featured = fallback.filter((p) => p.featured).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
-    const products = featured.length
-      ? featured
-      : fallback.sort((a, b) => b.rating - a.rating).slice(0, 3);
-    return res.status(200).json(products);
+    const featured = fallback
+      .filter((p) => p.featured)
+      .sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    if (featured.length >= MIN) return res.status(200).json(featured);
+    const featuredIds = new Set(featured.map((p) => p._id));
+    const topRated = fallback
+      .filter((p) => !featuredIds.has(p._id))
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, MIN - featured.length);
+    return res.status(200).json([...featured, ...topRated]);
   }
 
   let products = [];
 
   try {
     const featured = await Product.find({ featured: true }).sort({ sortOrder: 1 });
-    products = featured.length
-      ? featured
-      : await Product.find({}).sort({ rating: -1 }).limit(3);
+    if (featured.length >= MIN) {
+      products = featured;
+    } else {
+      const featuredIds = featured.map((p) => p._id);
+      const topRated = await Product.find({ _id: { $nin: featuredIds } })
+        .sort({ rating: -1 })
+        .limit(MIN - featured.length);
+      products = [...featured, ...topRated];
+    }
   } catch (error) {
     products = getFallbackProducts()
       .sort((a, b) => b.rating - a.rating)
-      .slice(0, 3);
+      .slice(0, MIN);
   }
 
   res.status(200).json(products);
