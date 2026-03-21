@@ -2,7 +2,6 @@ import path from "path";
 import express from "express";
 import dotenv from "dotenv";
 import cookieParser from "cookie-parser";
-import nodemailer from "nodemailer";
 import cors from "cors";
 dotenv.config();
 import connectDB from "./config/db.js";
@@ -39,11 +38,22 @@ app.get("/api/config/paypal", (req, res) =>
 );
 
 const __dirname = path.resolve(); // Set __dirname to current directory
-app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
+app.use("/uploads", express.static(path.join(__dirname, "/uploads"), { maxAge: "7d" }));
 
 if (process.env.NODE_ENV === "production") {
-  app.use(express.static(path.join(__dirname, "/frontend/build")));
-
+  app.use(
+    express.static(path.join(__dirname, "/frontend/build"), {
+      setHeaders: (res, filePath) => {
+        if (filePath.endsWith("index.html")) {
+          // index.html must never be cached so users always get fresh JS/CSS references
+          res.setHeader("Cache-Control", "no-cache");
+        } else if (filePath.includes("/static/")) {
+          // Hashed filenames: safe to cache for 1 year
+          res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
+        }
+      },
+    })
+  );
   app.get("*", (req, res) =>
     res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
   );
@@ -56,6 +66,9 @@ if (process.env.NODE_ENV === "production") {
 app.use(notFound);
 app.use(errorHandler);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
+// Prevent premature 502s on platforms like Render
+server.keepAliveTimeout = 120000;
+server.headersTimeout = 121000;

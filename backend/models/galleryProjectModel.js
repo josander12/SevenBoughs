@@ -44,7 +44,8 @@ const galleryProjectSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
-
+// Index for the default sort order used in getGalleryProjects
+galleryProjectSchema.index({ featured: -1, sortOrder: 1, createdAt: -1 });
 const GalleryProject = mongoose.model("GalleryProject", galleryProjectSchema);
 
 export default GalleryProject;

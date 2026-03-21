@@ -119,7 +119,7 @@ const getProductById = asyncHandler(async (req, res) => {
     throw new Error("Resource not found");
   }
 
-  const product = await Product.findById(req.params.id);
+  const product = await Product.findById(req.params.id).lean();
 
   if (product) {
     return res.json(product);
@@ -304,14 +304,15 @@ const getTopProducts = asyncHandler(async (req, res) => {
   let products = [];
 
   try {
-    const featured = await Product.find({ featured: true }).sort({ sortOrder: 1 });
+    const featured = await Product.find({ featured: true }).sort({ sortOrder: 1 }).lean();
     if (featured.length >= MIN) {
       products = featured;
     } else {
       const featuredIds = featured.map((p) => p._id);
       const topRated = await Product.find({ _id: { $nin: featuredIds } })
         .sort({ rating: -1 })
-        .limit(MIN - featured.length);
+        .limit(MIN - featured.length)
+        .lean();
       products = [...featured, ...topRated];
     }
   } catch (error) {

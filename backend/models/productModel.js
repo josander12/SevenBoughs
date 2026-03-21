@@ -86,6 +86,11 @@ const productSchema = new mongoose.Schema(
   }
 );
 
+// Indexes for common query patterns
+productSchema.index({ featured: -1, sortOrder: 1 });
+productSchema.index({ rating: -1 });
+productSchema.index({ name: 'text', brand: 'text', category: 'text' });
+
 const Product = mongoose.model("Product", productSchema);
 
 export default Product;

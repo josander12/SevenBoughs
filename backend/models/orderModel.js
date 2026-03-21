@@ -78,6 +78,9 @@ const orderSchema = mongoose.Schema(
   }
 );
 
+// Index for user order history lookups
+orderSchema.index({ user: 1 });
+
 const Order = mongoose.model("Order", orderSchema);
 
 export default Order;

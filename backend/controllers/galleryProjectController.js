@@ -31,7 +31,7 @@ const getGalleryProjectById = asyncHandler(async (req, res) => {
     throw new Error("Gallery project not found");
   }
 
-  const project = await GalleryProject.findById(req.params.id);
+  const project = await GalleryProject.findById(req.params.id).lean();
 
   if (!project) {
     res.status(404);
