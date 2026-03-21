@@ -3,17 +3,10 @@ import { Link } from "react-router-dom";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Meta from "../components/Meta";
+import { formatCalendarDate } from "../utils/calendarDate";
 import getErrorMessage from "../utils/getErrorMessage";
+import getOptimizedImageUrl from "../utils/getOptimizedImageUrl";
 import { useGetGalleryProjectsQuery } from "../slices/galleryApiSlice";
-
-const formatDate = (dateValue) => {
-  if (!dateValue) return "";
-
-  const date = new Date(dateValue);
-  if (Number.isNaN(date.getTime())) return "";
-
-  return date.toLocaleDateString();
-};
 
 const GalleryScreen = () => {
   const { data: projects = [], isLoading, error } = useGetGalleryProjectsQuery();
@@ -50,9 +43,10 @@ const GalleryScreen = () => {
                   <div className="gallery-carousel-wrap">
                     <img
                       className="gallery-card-image"
-                      src={project.images?.[0]}
+                      src={getOptimizedImageUrl(project.images?.[0], 900, 82)}
                       alt={project.title}
                       loading="lazy"
+                      decoding="async"
                     />
                   </div>
                 </Link>
@@ -68,7 +62,7 @@ const GalleryScreen = () => {
                     )}
                     {project.completedAt && (
                       <span className="text-muted">
-                        Completed {formatDate(project.completedAt)}
+                        Completed {formatCalendarDate(project.completedAt)}
                       </span>
                     )}
                   </div>

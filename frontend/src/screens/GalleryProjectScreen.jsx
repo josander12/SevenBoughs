@@ -3,17 +3,9 @@ import { Card, Carousel, Col, Row } from "react-bootstrap";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Meta from "../components/Meta";
+import { formatCalendarDate } from "../utils/calendarDate";
 import getErrorMessage from "../utils/getErrorMessage";
 import { useGetGalleryProjectDetailsQuery } from "../slices/galleryApiSlice";
-
-const formatDate = (dateValue) => {
-  if (!dateValue) return "";
-
-  const date = new Date(dateValue);
-  if (Number.isNaN(date.getTime())) return "";
-
-  return date.toLocaleDateString();
-};
 
 const GalleryProjectScreen = () => {
   const { id: projectId } = useParams();
@@ -53,7 +45,7 @@ const GalleryProjectScreen = () => {
               )}
               {project.completedAt && (
                 <span className="text-muted">
-                  Completed {formatDate(project.completedAt)}
+                  Completed {formatCalendarDate(project.completedAt)}
                 </span>
               )}
             </div>

@@ -6,19 +6,13 @@ import FormContainer from "../../components/FormContainer";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import Meta from "../../components/Meta";
+import { getCalendarDateInputValue } from "../../utils/calendarDate";
 import getErrorMessage from "../../utils/getErrorMessage";
 import {
   useGetGalleryProjectDetailsQuery,
   useUpdateGalleryProjectMutation,
   useUploadGalleryImagesMutation,
 } from "../../slices/galleryApiSlice";
-
-const getDateInputValue = (dateValue) => {
-  if (!dateValue) return "";
-  const date = new Date(dateValue);
-  if (Number.isNaN(date.getTime())) return "";
-  return date.toISOString().split("T")[0];
-};
 
 const GalleryProjectEditScreen = () => {
   const { id: projectId } = useParams();
@@ -49,7 +43,7 @@ const GalleryProjectEditScreen = () => {
       setTitle(project.title || "");
       setDescription(project.description || "");
       setCategory(project.category || "");
-      setCompletedAt(getDateInputValue(project.completedAt));
+      setCompletedAt(getCalendarDateInputValue(project.completedAt));
       setFeatured(Boolean(project.featured));
       setSortOrder(Number(project.sortOrder || 0));
       setImages(project.images || []);

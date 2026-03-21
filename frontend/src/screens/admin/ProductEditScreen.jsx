@@ -5,6 +5,7 @@ import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import FormContainer from "../../components/FormContainer";
 import { toast } from "react-toastify";
+import getOptimizedImageUrl from "../../utils/getOptimizedImageUrl";
 import {
   useUpdateProductMutation,
   useGetProductDetailsQuery,
@@ -48,17 +49,17 @@ const ProductEditScreen = () => {
           product.image.length === 1 &&
           product.image[0] === "/images/sample.jpg"
           ? []
-          : product.image || []
+          : product.image || [],
       );
       setBrand(product.brand === "Sample brand" ? "" : product.brand);
       setCategory(
-        product.category === "Sample category" ? "" : product.category
+        product.category === "Sample category" ? "" : product.category,
       );
       setCountInStock(product.countInStock);
       setSortOrder(product.sortOrder || 0);
       setFeatured(product.featured || false);
       setDescription(
-        product.description === "Sample description" ? "" : product.description
+        product.description === "Sample description" ? "" : product.description,
       );
     }
   }, [product]);
@@ -176,9 +177,11 @@ const ProductEditScreen = () => {
               {image.map((imgPath, idx) => (
                 <div key={imgPath} className="admin-image-tile">
                   <Image
-                    src={imgPath}
+                    src={getOptimizedImageUrl(imgPath, 160, 76)}
                     alt="product"
                     className="gallery-admin-preview"
+                    loading="lazy"
+                    decoding="async"
                   />
                   <div className="admin-image-actions">
                     {idx === 0 ? (

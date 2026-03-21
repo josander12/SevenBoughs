@@ -9,6 +9,7 @@ import Loader from "../../components/Loader";
 import Paginate from "../../components/Paginate";
 import { toast } from "react-toastify";
 import getErrorMessage from "../../utils/getErrorMessage";
+import getOptimizedImageUrl from "../../utils/getOptimizedImageUrl";
 import {
   useGetProductsQuery,
   useDeleteProductMutation,
@@ -91,10 +92,12 @@ const ProductListScreen = () => {
                       style={{ maxHeight: "3em" }}
                     >
                       <Image
-                        src={product.image[0]}
+                        src={getOptimizedImageUrl(product.image[0], 160, 76)}
                         alt={product.name}
                         fluid
                         rounded
+                        loading="lazy"
+                        decoding="async"
                       />
                     </LinkContainer>
                   </td>
