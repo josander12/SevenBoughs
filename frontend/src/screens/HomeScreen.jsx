@@ -14,7 +14,9 @@ const HomeScreen = () => {
       <Row>
         <Col md={2} />
         <Col md={8}>
-          <h1 style={{fontWeight:"100"}}>Welcome to Seven Boughs Woodworking.</h1>
+          <h1 style={{ fontWeight: "100" }}>
+            Welcome to Seven Boughs Woodworking.
+          </h1>
           <p style={{ paddingTop: "20px" }}>
             We focus our efforts on custom, handcrafted projects to meet your
             specific requirements. Our work includes furniture, cabinets,

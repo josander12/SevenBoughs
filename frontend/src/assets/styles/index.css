@@ -190,7 +190,6 @@ table th {
 }
 
 @media (max-width: 991px) {
-
   .nav-page-links {
     padding-top: 20px !important;
     padding-bottom: 20px !important;
@@ -241,7 +240,9 @@ table th {
 }
 
 .gallery-project-card-clickable {
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
 .gallery-project-card-clickable:hover {
