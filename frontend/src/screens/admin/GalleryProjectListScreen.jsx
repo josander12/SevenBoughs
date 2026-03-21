@@ -29,11 +29,13 @@ const GalleryProjectListScreen = () => {
   const [fileInputKey, setFileInputKey] = useState(0);
 
   const {
-    data: projects = [],
+    data: response = {},
     isLoading,
     error,
     refetch,
   } = useGetGalleryProjectsQuery();
+
+  const projects = response.projects || [];
 
   const [createGalleryProject, { isLoading: creating }] =
     useCreateGalleryProjectMutation();
