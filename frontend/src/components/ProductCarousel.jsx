@@ -22,7 +22,7 @@ const ProductCarousel = () => {
             <Col md={4}>
               <Link to={`/product/${product._id}`}>
                 <Image
-                  src={product.image}
+                  src={Array.isArray(product.image) ? product.image[0] : product.image}
                   alt={product.name}
                   fluid
                   className="c-image"

@@ -281,21 +281,26 @@ const createProductReview = asyncHandler(async (req, res) => {
   }
 });
 
-// @desc    Get top rated products
+// @desc    Get featured products (falls back to top rated if none are featured)
 // @route   GET /api/products/top
 // @access  Public
 const getTopProducts = asyncHandler(async (req, res) => {
   if (!isDbConnected()) {
-    const products = getFallbackProducts()
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, 3);
+    const fallback = getFallbackProducts();
+    const featured = fallback.filter((p) => p.featured).sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    const products = featured.length
+      ? featured
+      : fallback.sort((a, b) => b.rating - a.rating).slice(0, 3);
     return res.status(200).json(products);
   }
 
   let products = [];
 
   try {
-    products = await Product.find({}).sort({ rating: -1 }).limit(3);
+    const featured = await Product.find({ featured: true }).sort({ sortOrder: 1 });
+    products = featured.length
+      ? featured
+      : await Product.find({}).sort({ rating: -1 }).limit(3);
   } catch (error) {
     products = getFallbackProducts()
       .sort((a, b) => b.rating - a.rating)

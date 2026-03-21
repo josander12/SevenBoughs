@@ -6,7 +6,10 @@ const Product = ({ product }) => {
   return (
     <Card className="my-3 p-3 rounded" >
       <Link to={`/product/${product._id}`}>
-        <div className="image-container">
+        <div className="image-container" style={{ position: "relative" }}>
+          {product.featured && (
+            <span className="gallery-chip gallery-featured" style={{ position: "absolute", top: "8px", left: "8px", zIndex: 1 }}>Featured</span>
+          )}
           <Card.Img src={product.image[0]} variant="top" className="image" />
         </div>
       </Link>
