@@ -16,7 +16,8 @@ const isDbConnected = () => mongoose.connection.readyState === 1;
 const getGalleryProjects = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const requestedSize = Number(req.query.pageSize);
-  const pageSize = requestedSize > 0 && requestedSize <= 50 ? requestedSize : defaultPageSize;
+  const pageSize =
+    requestedSize > 0 && requestedSize <= 50 ? requestedSize : defaultPageSize;
   const page = Number(req.query.pageNumber) || 1;
   const keywordFilter = req.query.keyword
     ? {
