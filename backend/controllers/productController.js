@@ -15,7 +15,8 @@ const getFallbackProducts = () =>
     ...product,
     _id: (index + 1).toString(16).padStart(24, "0"),
     reviews: product.reviews || [],
-    sortOrder: typeof product.sortOrder === "number" ? product.sortOrder : index,
+    sortOrder:
+      typeof product.sortOrder === "number" ? product.sortOrder : index,
     createdAt: new Date(0).toISOString(),
     updatedAt: new Date(0).toISOString(),
   }));
@@ -41,9 +42,9 @@ const getProducts = asyncHandler(async (req, res) => {
 
     filteredProducts.sort(
       (a, b) =>
-        (Number(b.featured || 0) - Number(a.featured || 0)) ||
+        Number(b.featured || 0) - Number(a.featured || 0) ||
         Number(a.sortOrder || 0) - Number(b.sortOrder || 0) ||
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime(),
     );
 
     const startIndex = pageSize * (page - 1);
@@ -80,7 +81,7 @@ const getProducts = asyncHandler(async (req, res) => {
     ]);
 
     // Clean up the extra fields we added for sorting
-    const cleanedProducts = products.map(p => {
+    const cleanedProducts = products.map((p) => {
       const { sortOrderSafe, featuredSafe, ...rest } = p;
       return {
         ...rest,
@@ -89,7 +90,11 @@ const getProducts = asyncHandler(async (req, res) => {
       };
     });
 
-    res.json({ products: cleanedProducts, page, pages: Math.ceil(count / pageSize) });
+    res.json({
+      products: cleanedProducts,
+      page,
+      pages: Math.ceil(count / pageSize),
+    });
   } catch (error) {
     console.error("Product query error:", error.message);
     const products = getFallbackProducts().slice(0, pageSize);
@@ -102,7 +107,9 @@ const getProducts = asyncHandler(async (req, res) => {
 // @access  Public
 const getProductById = asyncHandler(async (req, res) => {
   if (!isDbConnected()) {
-    const product = getFallbackProducts().find((item) => item._id === req.params.id);
+    const product = getFallbackProducts().find(
+      (item) => item._id === req.params.id,
+    );
 
     if (product) {
       return res.json(product);
@@ -133,6 +140,7 @@ const createProduct = asyncHandler(async (req, res) => {
     brand,
     category,
     countInStock,
+    sortOrder,
     featured = false,
     description,
   } = req.body;
@@ -156,8 +164,7 @@ const createProduct = asyncHandler(async (req, res) => {
     category,
     countInStock: Number(countInStock),
     sortOrder: Number(sortOrder || 0),
-    featured: Boolean(featuredk),
-    sortOrder: Number(sortOrder || 0),
+    featured: Boolean(featured),
     numReviews: 0,
     description,
   });
@@ -178,6 +185,8 @@ const updateProduct = asyncHandler(async (req, res) => {
     image,
     brand,
     category,
+    countInStock,
+    sortOrder,
     featured,
   } = req.body;
 
@@ -241,7 +250,7 @@ const createProductReview = asyncHandler(async (req, res) => {
 
   if (product) {
     const alreadyReviewed = product.reviews.find(
-      (review) => review.user.toString() === req.user._id.toString()
+      (review) => review.user.toString() === req.user._id.toString(),
     );
 
     if (alreadyReviewed) {
