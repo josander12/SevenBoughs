@@ -75,7 +75,7 @@ const orderSchema = mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Index for user order history lookups

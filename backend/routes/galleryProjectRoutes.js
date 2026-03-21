@@ -11,7 +11,10 @@ import checkObjectId from "../middleware/checkObjectId.js";
 
 const router = express.Router();
 
-router.route("/").get(getGalleryProjects).post(protect, admin, createGalleryProject);
+router
+  .route("/")
+  .get(getGalleryProjects)
+  .post(protect, admin, createGalleryProject);
 router
   .route("/:id")
   .get(checkObjectId, getGalleryProjectById)

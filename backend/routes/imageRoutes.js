@@ -16,7 +16,10 @@ const getSafeUploadPath = (src) => {
   const relativePath = src.replace(/^\/uploads\//, "");
   const sourcePath = path.resolve(uploadsDir, relativePath);
 
-  if (!sourcePath.startsWith(`${uploadsDir}${path.sep}`) && sourcePath !== uploadsDir) {
+  if (
+    !sourcePath.startsWith(`${uploadsDir}${path.sep}`) &&
+    sourcePath !== uploadsDir
+  ) {
     return null;
   }
 

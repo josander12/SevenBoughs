@@ -9,6 +9,7 @@ import Message from "../../components/Message";
 import Meta from "../../components/Meta";
 import Paginate from "../../components/Paginate";
 import getErrorMessage from "../../utils/getErrorMessage";
+import getOptimizedImageUrl from "../../utils/getOptimizedImageUrl";
 import {
   useCreateGalleryProjectMutation,
   useDeleteGalleryProjectMutation,
@@ -310,6 +311,7 @@ const GalleryProjectListScreen = () => {
               <thead>
                 <tr>
                   <th>TITLE</th>
+                  <th>PHOTO</th>
                   <th>PHOTOS</th>
                   <th>FEATURED</th>
                   <th>ORDER</th>
@@ -320,6 +322,21 @@ const GalleryProjectListScreen = () => {
                 {projects.map((project) => (
                   <tr key={project._id}>
                     <td>{project.title}</td>
+                    <td>
+                      {project.images && project.images.length > 0 ? (
+                        <Image
+                          src={getOptimizedImageUrl(project.images[0], 160, 76)}
+                          alt={project.title}
+                          fluid
+                          rounded
+                          loading="lazy"
+                          decoding="async"
+                          style={{ maxHeight: "3em" }}
+                        />
+                      ) : (
+                        <span className="text-muted">No image</span>
+                      )}
+                    </td>
                     <td>{project.images?.length || 0}</td>
                     <td>{project.featured ? "Yes" : "No"}</td>
                     <td>{project.sortOrder ?? 0}</td>

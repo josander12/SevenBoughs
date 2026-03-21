@@ -1,12 +1,11 @@
 import { Container } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
 import { useLocation } from "react-router-dom";
 import { useEffect } from "react";
-
 
 const App = () => {
   const location = useLocation();
@@ -15,13 +14,12 @@ const App = () => {
     window.scrollTo(0, 0);
   }, [location.pathname]);
 
-  const isHomePage = location.pathname === '/';
+  const isHomePage = location.pathname === "/";
 
   return (
-    
-    <div className={isHomePage ? "home-screen" : ''}>
+    <div className={isHomePage ? "home-screen" : ""}>
       <Header />
-      <main className='py-3'>
+      <main className="py-3">
         <Container>
           <Outlet />
         </Container>
@@ -29,8 +27,6 @@ const App = () => {
       <Footer />
       <ToastContainer />
     </div>
-      
-    
   );
 };
 export default App;

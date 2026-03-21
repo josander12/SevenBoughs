@@ -1,26 +1,29 @@
 import mongoose from "mongoose";
 
-const reviewSchema = mongoose.Schema({
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    required: true,
-    ref: "User",
+const reviewSchema = mongoose.Schema(
+  {
+    user: {
+      type: mongoose.Schema.Types.ObjectId,
+      required: true,
+      ref: "User",
+    },
+    name: {
+      type: String,
+      required: true,
+    },
+    rating: {
+      type: Number,
+      required: true,
+    },
+    comment: {
+      type: String,
+      required: true,
+    },
   },
-  name: {
-    type: String,
-    required: true,
+  {
+    timestamps: true,
   },
-  rating: {
-    type: Number,
-    required: true,
-  },
-  comment: {
-    type: String,
-    required: true,
-  },
-}, {
-  timestamps: true
-})
+);
 
 const productSchema = new mongoose.Schema(
   {
@@ -33,10 +36,12 @@ const productSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    image: [{
-      type: String,
-      required: true,
-    }],
+    image: [
+      {
+        type: String,
+        required: true,
+      },
+    ],
     brand: {
       type: String,
       required: true,
@@ -83,13 +88,13 @@ const productSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Indexes for common query patterns
 productSchema.index({ featured: -1, sortOrder: 1 });
 productSchema.index({ rating: -1 });
-productSchema.index({ name: 'text', brand: 'text', category: 'text' });
+productSchema.index({ name: "text", brand: "text", category: "text" });
 
 const Product = mongoose.model("Product", productSchema);
 

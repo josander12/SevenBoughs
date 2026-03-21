@@ -10,17 +10,17 @@ const authUser = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const { email, password } = req.body;
 
-  logger.logRequest('POST', '/api/users/login');
+  logger.logRequest("POST", "/api/users/login");
 
   try {
-    logger.logDb('findOne', 'User', { email });
+    logger.logDb("findOne", "User", { email });
     const user = await User.findOne({ email });
 
     if (user && (await user.matchPassword(password))) {
       generateToken(res, user._id);
 
       const durationMs = Date.now() - startTime;
-      logger.logSuccess('/api/users/login', 200, durationMs, {
+      logger.logSuccess("/api/users/login", 200, durationMs, {
         userId: user._id,
         userEmail: user.email,
         isAdmin: user.isAdmin,
@@ -33,12 +33,14 @@ const authUser = asyncHandler(async (req, res) => {
         isAdmin: user.isAdmin,
       });
     } else {
-      logger.warn('AUTH', 'Login attempt failed - invalid credentials', { email });
+      logger.warn("AUTH", "Login attempt failed - invalid credentials", {
+        email,
+      });
       res.status(401);
       throw new Error("Invalid email or password");
     }
   } catch (error) {
-    logger.logError('AUTH_USER', error, { email });
+    logger.logError("AUTH_USER", error, { email });
     throw error;
   }
 });
@@ -50,19 +52,21 @@ const registerUser = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const { name, email, password } = req.body;
 
-  logger.logRequest('POST', '/api/users');
+  logger.logRequest("POST", "/api/users");
 
   try {
-    logger.logDb('findOne', 'User', { email });
+    logger.logDb("findOne", "User", { email });
     const userExists = await User.findOne({ email });
 
     if (userExists) {
-      logger.logValidation('REGISTER_USER', [`User with email ${email} already exists`]);
+      logger.logValidation("REGISTER_USER", [
+        `User with email ${email} already exists`,
+      ]);
       res.status(400);
       throw new Error("User already exists");
     }
 
-    logger.logDb('create', 'User', { email, name });
+    logger.logDb("create", "User", { email, name });
     const user = await User.create({
       name,
       email,
@@ -72,7 +76,7 @@ const registerUser = asyncHandler(async (req, res) => {
     generateToken(res, user._id);
 
     const durationMs = Date.now() - startTime;
-    logger.logSuccess('/api/users', 201, durationMs, {
+    logger.logSuccess("/api/users", 201, durationMs, {
       userId: user._id,
       userEmail: user.email,
     });
@@ -84,7 +88,7 @@ const registerUser = asyncHandler(async (req, res) => {
       isAdmin: user.isAdmin,
     });
   } catch (error) {
-    logger.logError('REGISTER_USER', error, { email, name });
+    logger.logError("REGISTER_USER", error, { email, name });
     throw error;
   }
 });

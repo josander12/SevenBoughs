@@ -36,11 +36,14 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/galleryprojects", galleryProjectRoutes);
 
 app.get("/api/config/paypal", (req, res) =>
-  res.send({ clientId: process.env.PAYPAL_CLIENT_ID })
+  res.send({ clientId: process.env.PAYPAL_CLIENT_ID }),
 );
 
 const __dirname = path.resolve(); // Set __dirname to current directory
-app.use("/uploads", express.static(path.join(__dirname, "/uploads"), { maxAge: "7d" }));
+app.use(
+  "/uploads",
+  express.static(path.join(__dirname, "/uploads"), { maxAge: "7d" }),
+);
 
 if (process.env.NODE_ENV === "production") {
   app.use(
@@ -54,10 +57,10 @@ if (process.env.NODE_ENV === "production") {
           res.setHeader("Cache-Control", "public, max-age=31536000, immutable");
         }
       },
-    })
+    }),
   );
   app.get("*", (req, res) =>
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html")),
   );
 } else {
   app.get("/", (req, res) => {

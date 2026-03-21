@@ -24,9 +24,11 @@ const ProductCarousel = () => {
               <Link to={`/product/${product._id}`}>
                 <Image
                   src={getOptimizedImageUrl(
-                    Array.isArray(product.image) ? product.image[0] : product.image,
+                    Array.isArray(product.image)
+                      ? product.image[0]
+                      : product.image,
                     1000,
-                    84
+                    84,
                   )}
                   alt={product.name}
                   fluid

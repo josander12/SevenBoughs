@@ -1,9 +1,9 @@
 import { Helmet } from "react-helmet-async";
 
-const Meta = ({ 
-  title = "Seven Boughs", 
-  description = "Quality custom woodworking", 
-  keywords = "woodworking, custom woodworking, carpenter" 
+const Meta = ({
+  title = "Seven Boughs",
+  description = "Quality custom woodworking",
+  keywords = "woodworking, custom woodworking, carpenter",
 }) => {
   return (
     <Helmet>

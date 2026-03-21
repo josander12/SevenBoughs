@@ -64,7 +64,9 @@ const ProductListScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{getErrorMessage(error, "Failed to load products")}</Message>
+        <Message variant="danger">
+          {getErrorMessage(error, "Failed to load products")}
+        </Message>
       ) : (
         <>
           <Table striped hover responsive className="table-sm">

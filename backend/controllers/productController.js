@@ -31,10 +31,16 @@ const getProducts = asyncHandler(async (req, res) => {
   const page = Number(req.query.pageNumber) || 1;
   const keywordText = (req.query.keyword || "").toString().trim();
 
-  logger.logRequest('GET', '/api/products', { page, keyword: keywordText || undefined });
+  logger.logRequest("GET", "/api/products", {
+    page,
+    keyword: keywordText || undefined,
+  });
 
   if (!isDbConnected()) {
-    logger.warn('DATABASE', 'MongoDB not connected, using fallback seed data for products');
+    logger.warn(
+      "DATABASE",
+      "MongoDB not connected, using fallback seed data for products",
+    );
     const regex = keywordText ? new RegExp(keywordText, "i") : null;
     const filteredProducts = getFallbackProducts().filter((product) => {
       if (!regex) return true;
@@ -57,9 +63,9 @@ const getProducts = asyncHandler(async (req, res) => {
     const pages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
 
     const durationMs = Date.now() - startTime;
-    logger.logSuccess('/api/products', 200, durationMs, {
+    logger.logSuccess("/api/products", 200, durationMs, {
       productsReturned: products.length,
-      source: 'fallback',
+      source: "fallback",
       page,
       pages,
     });
@@ -78,14 +84,14 @@ const getProducts = asyncHandler(async (req, res) => {
     : {};
 
   try {
-    logger.logDb('count', 'Product', { keyword: keywordText || 'none' });
+    logger.logDb("count", "Product", { keyword: keywordText || "none" });
     const count = await Product.countDocuments({ ...keyword });
 
-    logger.logDb('find', 'Product', {
+    logger.logDb("find", "Product", {
       page,
       pageSize,
       skip: pageSize * (page - 1),
-      keyword: keywordText || 'none',
+      keyword: keywordText || "none",
     });
 
     const products = await Product.aggregate([
@@ -113,7 +119,7 @@ const getProducts = asyncHandler(async (req, res) => {
 
     const pages = Math.ceil(count / pageSize);
     const durationMs = Date.now() - startTime;
-    logger.logSuccess('/api/products', 200, durationMs, {
+    logger.logSuccess("/api/products", 200, durationMs, {
       productsReturned: cleanedProducts.length,
       page,
       pages,
@@ -126,9 +132,9 @@ const getProducts = asyncHandler(async (req, res) => {
       pages,
     });
   } catch (error) {
-    logger.logError('GET_PRODUCTS', error, { page, keyword: keywordText });
+    logger.logError("GET_PRODUCTS", error, { page, keyword: keywordText });
     const products = getFallbackProducts().slice(0, pageSize);
-    logger.warn('FALLBACK', 'Product query failed, returning fallback data');
+    logger.warn("FALLBACK", "Product query failed, returning fallback data");
     res.json({ products, page: 1, pages: 1 });
   }
 });
@@ -140,10 +146,10 @@ const getProductById = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const productId = req.params.id;
 
-  logger.logRequest('GET', `/api/products/${productId}`);
+  logger.logRequest("GET", `/api/products/${productId}`);
 
   if (!isDbConnected()) {
-    logger.warn('DATABASE', 'MongoDB not connected, using fallback seed data');
+    logger.warn("DATABASE", "MongoDB not connected, using fallback seed data");
     const product = getFallbackProducts().find(
       (item) => item._id === productId,
     );
@@ -151,19 +157,21 @@ const getProductById = asyncHandler(async (req, res) => {
     if (product) {
       const durationMs = Date.now() - startTime;
       logger.logSuccess(`/api/products/${productId}`, 200, durationMs, {
-        source: 'fallback',
+        source: "fallback",
         productName: product.name,
       });
       return res.json(product);
     }
 
-    logger.warn('DATABASE', 'Product not found in fallback data', { _id: productId });
+    logger.warn("DATABASE", "Product not found in fallback data", {
+      _id: productId,
+    });
     res.status(404);
     throw new Error("Resource not found");
   }
 
   try {
-    logger.logDb('findById', 'Product', { _id: productId });
+    logger.logDb("findById", "Product", { _id: productId });
     const product = await Product.findById(productId).lean();
 
     if (product) {
@@ -173,12 +181,12 @@ const getProductById = asyncHandler(async (req, res) => {
       });
       return res.json(product);
     } else {
-      logger.warn('DATABASE', 'Product not found', { _id: productId });
+      logger.warn("DATABASE", "Product not found", { _id: productId });
       res.status(404);
       throw new Error("Resource not found");
     }
   } catch (error) {
-    logger.logError('GET_PRODUCT_BY_ID', error, { productId });
+    logger.logError("GET_PRODUCT_BY_ID", error, { productId });
     throw error;
   }
 });
@@ -358,7 +366,9 @@ const getTopProducts = asyncHandler(async (req, res) => {
   let products = [];
 
   try {
-    const featured = await Product.find({ featured: true }).sort({ sortOrder: 1 }).lean();
+    const featured = await Product.find({ featured: true })
+      .sort({ sortOrder: 1 })
+      .lean();
     if (featured.length >= MIN) {
       products = featured;
     } else {

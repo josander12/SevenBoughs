@@ -83,7 +83,9 @@ const ProductScreen = () => {
       {isLoading ? (
         <Loader />
       ) : error ? (
-        <Message variant="danger">{getErrorMessage(error, "Failed to load product")}</Message>
+        <Message variant="danger">
+          {getErrorMessage(error, "Failed to load product")}
+        </Message>
       ) : (
         <>
           <Meta title={product.name} />
@@ -165,7 +167,7 @@ const ProductScreen = () => {
                                 <option key={x + 1} value={x + 1}>
                                   {x + 1}
                                 </option>
-                              )
+                              ),
                             )}
                           </Form.Control>
                         </Col>
@@ -241,7 +243,8 @@ const ProductScreen = () => {
                     </Form>
                   ) : (
                     <Message>
-                      Please <Link to="/login">sign in</Link> to write a review{" "}
+                      Please <Link to="/login">sign in</Link> to write a
+                      review{" "}
                     </Message>
                   )}
                 </ListGroup.Item>

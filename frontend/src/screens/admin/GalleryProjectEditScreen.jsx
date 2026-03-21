@@ -75,7 +75,10 @@ const GalleryProjectEditScreen = () => {
   };
 
   const setMainImage = (imagePath) => {
-    setImages((prev) => [imagePath, ...prev.filter((img) => img !== imagePath)]);
+    setImages((prev) => [
+      imagePath,
+      ...prev.filter((img) => img !== imagePath),
+    ]);
   };
 
   const submitHandler = async (event) => {

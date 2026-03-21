@@ -17,15 +17,15 @@ const addOrderItems = asyncHandler(async (req, res) => {
     totalPrice,
   } = req.body;
 
-  logger.logRequest('POST', '/api/orders', {}, req.user?.role);
+  logger.logRequest("POST", "/api/orders", {}, req.user?.role);
 
   if (orderItems && orderItems.length === 0) {
-    logger.logValidation('ADD_ORDER_ITEMS', ['No order items provided']);
+    logger.logValidation("ADD_ORDER_ITEMS", ["No order items provided"]);
     res.status(400);
     throw new Error("No order items");
   } else {
     try {
-      logger.logDb('create', 'Order', {
+      logger.logDb("create", "Order", {
         itemCount: orderItems.length,
         totalPrice,
         userId: req.user._id,
@@ -49,7 +49,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
       const createdOrder = await order.save();
 
       const durationMs = Date.now() - startTime;
-      logger.logSuccess('/api/orders', 201, durationMs, {
+      logger.logSuccess("/api/orders", 201, durationMs, {
         orderId: createdOrder._id,
         itemCount: createdOrder.orderItems.length,
         totalPrice: createdOrder.totalPrice,
@@ -57,7 +57,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 
       res.status(201).json(createdOrder);
     } catch (error) {
-      logger.logError('ADD_ORDER_ITEMS', error, {
+      logger.logError("ADD_ORDER_ITEMS", error, {
         itemCount: orderItems?.length,
         totalPrice,
       });
@@ -73,20 +73,20 @@ const getMyOrders = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const userId = req.user._id;
 
-  logger.logRequest('GET', '/api/orders/myorders', {}, req.user?.role);
+  logger.logRequest("GET", "/api/orders/myorders", {}, req.user?.role);
 
   try {
-    logger.logDb('find', 'Order', { user: userId });
+    logger.logDb("find", "Order", { user: userId });
     const orders = await Order.find({ user: userId });
 
     const durationMs = Date.now() - startTime;
-    logger.logSuccess('/api/orders/myorders', 200, durationMs, {
+    logger.logSuccess("/api/orders/myorders", 200, durationMs, {
       ordersReturned: orders.length,
     });
 
     res.status(200).json(orders);
   } catch (error) {
-    logger.logError('GET_MY_ORDERS', error, { userId });
+    logger.logError("GET_MY_ORDERS", error, { userId });
     throw error;
   }
 });
@@ -97,7 +97,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
 const getOrderById = asyncHandler(async (req, res) => {
   const order = await Order.findById(req.params.id).populate(
     "user",
-    "name email"
+    "name email",
   );
 
   if (order) {

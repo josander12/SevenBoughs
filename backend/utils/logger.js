@@ -4,10 +4,10 @@
  */
 
 const LOG_LEVELS = {
-  ERROR: 'ERROR',
-  WARN: 'WARN',
-  INFO: 'INFO',
-  DEBUG: 'DEBUG',
+  ERROR: "ERROR",
+  WARN: "WARN",
+  INFO: "INFO",
+  DEBUG: "DEBUG",
 };
 
 const getCurrentTimestamp = () => new Date().toISOString();
@@ -41,7 +41,10 @@ const logger = {
   },
 
   debug: (context, message, data = null) => {
-    if (process.env.DEBUG === 'true' || process.env.NODE_ENV === 'development') {
+    if (
+      process.env.DEBUG === "true" ||
+      process.env.NODE_ENV === "development"
+    ) {
       console.log(formatLog(LOG_LEVELS.DEBUG, context, message, data));
     }
   },
@@ -60,7 +63,7 @@ const logger = {
       query: Object.keys(query).length > 0 ? query : undefined,
       userRole,
     };
-    logger.debug('API_REQUEST', `${method} ${endpoint}`, data);
+    logger.debug("API_REQUEST", `${method} ${endpoint}`, data);
   },
 
   /**
@@ -77,7 +80,11 @@ const logger = {
       durationMs,
       ...responseData,
     };
-    logger.info('API_RESPONSE', `${endpoint} completed in ${durationMs}ms`, data);
+    logger.info(
+      "API_RESPONSE",
+      `${endpoint} completed in ${durationMs}ms`,
+      data,
+    );
   },
 
   /**
@@ -92,7 +99,7 @@ const logger = {
       collection,
       ...details,
     };
-    logger.debug('DATABASE', `${operation} on ${collection}`, data);
+    logger.debug("DATABASE", `${operation} on ${collection}`, data);
   },
 
   /**
@@ -117,7 +124,7 @@ const logger = {
    * @param {array|string} errors - Validation errors
    */
   logValidation: (context, errors) => {
-    logger.warn('VALIDATION', context, { errors });
+    logger.warn("VALIDATION", context, { errors });
   },
 };
 
