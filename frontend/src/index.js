@@ -58,6 +58,7 @@ const router = createBrowserRouter(
       <Route path="/about" element={<AboutScreen />} />
       <Route path="/contact" element={<ContactScreen />} />
       <Route path="/gallery" element={<GalleryScreen />} />
+      <Route path="/gallery/page/:pageNumber" element={<GalleryScreen />} />
       <Route path="/gallery/:id" element={<GalleryProjectScreen />} />
 
       <Route path="" element={<PrivateRoute />}>

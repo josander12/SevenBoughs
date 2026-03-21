@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 import asyncHandler from "../middleware/asyncHandler.js";
 import Product from "../models/productModel.js";
 import seedProducts from "../data/products.js";
+import logger from "../utils/logger.js";
 
 const defaultPageSize = Number(process.env.PAGINATION_LIMIT) || 8;
 
@@ -25,11 +26,15 @@ const getFallbackProducts = () =>
 // @route   GET /api/products
 // @access  Public
 const getProducts = asyncHandler(async (req, res) => {
+  const startTime = Date.now();
   const pageSize = defaultPageSize;
   const page = Number(req.query.pageNumber) || 1;
   const keywordText = (req.query.keyword || "").toString().trim();
 
+  logger.logRequest('GET', '/api/products', { page, keyword: keywordText || undefined });
+
   if (!isDbConnected()) {
+    logger.warn('DATABASE', 'MongoDB not connected, using fallback seed data for products');
     const regex = keywordText ? new RegExp(keywordText, "i") : null;
     const filteredProducts = getFallbackProducts().filter((product) => {
       if (!regex) return true;
@@ -51,6 +56,14 @@ const getProducts = asyncHandler(async (req, res) => {
     const products = filteredProducts.slice(startIndex, startIndex + pageSize);
     const pages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
 
+    const durationMs = Date.now() - startTime;
+    logger.logSuccess('/api/products', 200, durationMs, {
+      productsReturned: products.length,
+      source: 'fallback',
+      page,
+      pages,
+    });
+
     return res.json({ products, page, pages });
   }
 
@@ -65,7 +78,15 @@ const getProducts = asyncHandler(async (req, res) => {
     : {};
 
   try {
+    logger.logDb('count', 'Product', { keyword: keywordText || 'none' });
     const count = await Product.countDocuments({ ...keyword });
+
+    logger.logDb('find', 'Product', {
+      page,
+      pageSize,
+      skip: pageSize * (page - 1),
+      keyword: keywordText || 'none',
+    });
 
     const products = await Product.aggregate([
       { $match: { ...keyword } },
@@ -90,14 +111,24 @@ const getProducts = asyncHandler(async (req, res) => {
       };
     });
 
+    const pages = Math.ceil(count / pageSize);
+    const durationMs = Date.now() - startTime;
+    logger.logSuccess('/api/products', 200, durationMs, {
+      productsReturned: cleanedProducts.length,
+      page,
+      pages,
+      total: count,
+    });
+
     res.json({
       products: cleanedProducts,
       page,
-      pages: Math.ceil(count / pageSize),
+      pages,
     });
   } catch (error) {
-    console.error("Product query error:", error.message);
+    logger.logError('GET_PRODUCTS', error, { page, keyword: keywordText });
     const products = getFallbackProducts().slice(0, pageSize);
+    logger.warn('FALLBACK', 'Product query failed, returning fallback data');
     res.json({ products, page: 1, pages: 1 });
   }
 });
@@ -106,26 +137,49 @@ const getProducts = asyncHandler(async (req, res) => {
 // @route   GET /api/products/:id
 // @access  Public
 const getProductById = asyncHandler(async (req, res) => {
+  const startTime = Date.now();
+  const productId = req.params.id;
+
+  logger.logRequest('GET', `/api/products/${productId}`);
+
   if (!isDbConnected()) {
+    logger.warn('DATABASE', 'MongoDB not connected, using fallback seed data');
     const product = getFallbackProducts().find(
-      (item) => item._id === req.params.id,
+      (item) => item._id === productId,
     );
 
     if (product) {
+      const durationMs = Date.now() - startTime;
+      logger.logSuccess(`/api/products/${productId}`, 200, durationMs, {
+        source: 'fallback',
+        productName: product.name,
+      });
       return res.json(product);
     }
 
+    logger.warn('DATABASE', 'Product not found in fallback data', { _id: productId });
     res.status(404);
     throw new Error("Resource not found");
   }
 
-  const product = await Product.findById(req.params.id).lean();
+  try {
+    logger.logDb('findById', 'Product', { _id: productId });
+    const product = await Product.findById(productId).lean();
 
-  if (product) {
-    return res.json(product);
-  } else {
-    res.status(404);
-    throw new Error("Resource not found");
+    if (product) {
+      const durationMs = Date.now() - startTime;
+      logger.logSuccess(`/api/products/${productId}`, 200, durationMs, {
+        productName: product.name,
+      });
+      return res.json(product);
+    } else {
+      logger.warn('DATABASE', 'Product not found', { _id: productId });
+      res.status(404);
+      throw new Error("Resource not found");
+    }
+  } catch (error) {
+    logger.logError('GET_PRODUCT_BY_ID', error, { productId });
+    throw error;
   }
 });
 
