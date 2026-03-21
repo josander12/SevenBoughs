@@ -36,7 +36,7 @@ const GalleryProjectListScreen = () => {
     isLoading,
     error,
     refetch,
-  } = useGetGalleryProjectsQuery({ pageNumber });
+  } = useGetGalleryProjectsQuery({ pageNumber, pageSize: 12 });
 
   const projects = response.projects || [];
   const pages = response.pages || 1;

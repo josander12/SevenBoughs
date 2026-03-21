@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 
@@ -11,10 +11,13 @@ const SearchBox = ({
   const { keyword: urlKeyword } = useParams();
   const [keyword, setKeyword] = useState(urlKeyword || "");
 
+  useEffect(() => {
+    setKeyword(urlKeyword || "");
+  }, [urlKeyword]);
+
   const submitHandler = (e) => {
     e.preventDefault();
     if (keyword.trim()) {
-      setKeyword("");
       navigate(`${basePath}/${encodeURIComponent(keyword.trim())}`);
     } else {
       navigate(defaultPath);

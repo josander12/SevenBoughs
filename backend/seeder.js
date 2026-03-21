@@ -19,10 +19,12 @@ const isSafeDb = /dev|test|staging/i.test(dbName);
 
 if (!isSafeDb) {
   console.error(
-    `\n⛔  SEEDER BLOCKED: The database "${dbName}" does not look like a dev/test database.`.red.bold
+    `\n⛔  SEEDER BLOCKED: The database "${dbName}" does not look like a dev/test database.`
+      .red.bold,
   );
   console.error(
-    `   Update MONGO_URI to point to a database with "dev", "test", or "staging" in its name.\n`.red
+    `   Update MONGO_URI to point to a database with "dev", "test", or "staging" in its name.\n`
+      .red,
   );
   process.exit(1);
 }

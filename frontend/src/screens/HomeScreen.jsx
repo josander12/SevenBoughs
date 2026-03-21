@@ -46,15 +46,15 @@ const HomeScreen = () => {
       </Row>
 
       <Row style={{ paddingTop: "20px" }}>
-        <Col md={3} />
+        <Col md={2} />
         <Col md={2}>
           <Link className="btn btn-dark home-screen-links" to="/about">
             Our Story
           </Link>
         </Col>
         <Col md={2}>
-          <Link className="btn btn-dark home-screen-links" to="/contact">
-            Contact Us
+          <Link className="btn btn-dark home-screen-links" to="/gallery">
+            Gallery
           </Link>
         </Col>
         <Col md={2}>
@@ -62,7 +62,12 @@ const HomeScreen = () => {
             Shop
           </Link>
         </Col>
-        <Col md={3} />
+        <Col md={2}>
+          <Link className="btn btn-dark home-screen-links" to="/contact">
+            Contact Us
+          </Link>
+        </Col>
+        <Col md={2} />
       </Row>
     </div>
   );
