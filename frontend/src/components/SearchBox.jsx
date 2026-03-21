@@ -2,7 +2,11 @@ import { useState } from "react";
 import { Form, Button } from "react-bootstrap";
 import { useParams, useNavigate } from "react-router-dom";
 
-const SearchBox = () => {
+const SearchBox = ({
+  basePath = "/search",
+  defaultPath = "/shop",
+  placeholder = "Search Products...",
+}) => {
   const navigate = useNavigate();
   const { keyword: urlKeyword } = useParams();
   const [keyword, setKeyword] = useState(urlKeyword || "");
@@ -11,9 +15,9 @@ const SearchBox = () => {
     e.preventDefault();
     if (keyword.trim()) {
       setKeyword("");
-      navigate(`/search/${keyword}`);
+      navigate(`${basePath}/${encodeURIComponent(keyword.trim())}`);
     } else {
-      navigate("/shop");
+      navigate(defaultPath);
     }
   };
 
@@ -24,7 +28,7 @@ const SearchBox = () => {
         name="q"
         onChange={(e) => setKeyword(e.target.value)}
         value={keyword}
-        placeholder="Search Products..."
+        placeholder={placeholder}
         className="mr-sm-2 ml-sm-5"
       ></Form.Control>
       <Button type="submit" variant="primary" className="p-2 mx-2">

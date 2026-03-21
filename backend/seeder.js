@@ -10,6 +10,23 @@ import connectDB from "./config/db.js";
 
 dotenv.config();
 
+// Safety guard: refuse to run seeder against a production database.
+// The MONGO_URI database name must contain "dev", "test", or "staging".
+const mongoUri = process.env.MONGO_URI || "";
+const dbNameMatch = mongoUri.match(/\/([^/?]+)(\?|$)/);
+const dbName = dbNameMatch ? dbNameMatch[1] : "";
+const isSafeDb = /dev|test|staging/i.test(dbName);
+
+if (!isSafeDb) {
+  console.error(
+    `\n⛔  SEEDER BLOCKED: The database "${dbName}" does not look like a dev/test database.`.red.bold
+  );
+  console.error(
+    `   Update MONGO_URI to point to a database with "dev", "test", or "staging" in its name.\n`.red
+  );
+  process.exit(1);
+}
+
 connectDB();
 
 const importData = async () => {

@@ -59,6 +59,11 @@ const router = createBrowserRouter(
       <Route path="/contact" element={<ContactScreen />} />
       <Route path="/gallery" element={<GalleryScreen />} />
       <Route path="/gallery/page/:pageNumber" element={<GalleryScreen />} />
+      <Route path="/gallery/search/:keyword" element={<GalleryScreen />} />
+      <Route
+        path="/gallery/search/:keyword/page/:pageNumber"
+        element={<GalleryScreen />}
+      />
       <Route path="/gallery/:id" element={<GalleryProjectScreen />} />
 
       <Route path="" element={<PrivateRoute />}>
@@ -85,12 +90,16 @@ const router = createBrowserRouter(
           element={<GalleryProjectListScreen />}
         />
         <Route
+          path="/admin/galleryprojects/:pageNumber"
+          element={<GalleryProjectListScreen />}
+        />
+        <Route
           path="/admin/galleryproject/:id/edit"
           element={<GalleryProjectEditScreen />}
         />
       </Route>
-    </Route>
-  )
+    </Route>,
+  ),
 );
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
@@ -103,7 +112,7 @@ root.render(
         </PayPalScriptProvider>
       </Provider>
     </HelmetProvider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 reportWebVitals();

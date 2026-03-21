@@ -5,7 +5,6 @@ import { LinkContainer } from "react-router-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { useLogoutMutation } from "../slices/usersApiSlice";
 import { logout } from "../slices/authSlice";
-import SearchBox from "./SearchBox";
 import logo from "../assets/logo.png";
 import { resetCart } from "../slices/cartSlice";
 
@@ -68,7 +67,6 @@ const Header = () => {
               </div>
 
               <div className="ms-auto">
-                <SearchBox />
                 <a
                   href="https://www.facebook.com/profile.php?id=61565746715356"
                   target="_blank"

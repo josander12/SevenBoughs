@@ -7,6 +7,7 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Paginate from "../components/Paginate";
 import ProductCarousel from "../components/ProductCarousel";
+import SearchBox from "../components/SearchBox";
 import Meta from "../components/Meta";
 import getErrorMessage from "../utils/getErrorMessage";
 
@@ -22,41 +23,42 @@ const ShopScreen = () => {
   });
 
   return (
-    
-      <div className="background">
-        {!keyword && (pageNumber <= 1 || !pageNumber) ? (
-          <ProductCarousel />
-        ) : (
-          <Link to="/shop" className="btn btn-light mb-4">
-            Go Back
-          </Link>
-        )}
-        {isLoading ? (
-          <Loader />
-        ) : error ? (
-          <Message variant="danger">
-            {getErrorMessage(error, "Failed to load products")}
-          </Message>
-        ) : (
-          <>
-            <Meta />
-            <h1>Latest Products</h1>
-            <Row>
-              {data.products.map((product) => (
-                <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
-                  <Product product={product} />
-                </Col>
-              ))}
-            </Row>
-            <Paginate
-              pages={data.pages}
-              page={data.page}
-              keyword={keyword ? keyword : ""}
-            />
-          </>
-        )}
+    <div className="background">
+      <div className="mb-3">
+        <SearchBox />
       </div>
-    
+      {!keyword && (pageNumber <= 1 || !pageNumber) ? (
+        <ProductCarousel />
+      ) : (
+        <Link to="/shop" className="btn btn-light mb-4">
+          Go Back
+        </Link>
+      )}
+      {isLoading || !data ? (
+        <Loader />
+      ) : error ? (
+        <Message variant="danger">
+          {getErrorMessage(error, "Failed to load products")}
+        </Message>
+      ) : (
+        <>
+          <Meta />
+          <h1>Latest Products</h1>
+          <Row>
+            {data.products.map((product) => (
+              <Col key={product._id} sm={12} md={6} lg={4} xl={3}>
+                <Product product={product} />
+              </Col>
+            ))}
+          </Row>
+          <Paginate
+            pages={data.pages}
+            page={data.page}
+            keyword={keyword ? keyword : ""}
+          />
+        </>
+      )}
+    </div>
   );
 };
 export default ShopScreen;

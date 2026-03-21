@@ -4,8 +4,8 @@ import { apiSlice } from "./apiSlice";
 export const galleryApiSlice = apiSlice.injectEndpoints({
   endpoints: (builder) => ({
     getGalleryProjects: builder.query({
-      query: ({ pageNumber = 1 } = {}) => ({
-        url: `${GALLERY_URL}?pageNumber=${pageNumber}`,
+      query: ({ pageNumber = 1, keyword = "" } = {}) => ({
+        url: `${GALLERY_URL}?pageNumber=${pageNumber}${keyword ? `&keyword=${encodeURIComponent(keyword)}` : ""}`,
       }),
       providesTags: ["GalleryProject"],
       keepUnusedDataFor: 5,

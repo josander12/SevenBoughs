@@ -17,11 +17,26 @@ const getGalleryProjects = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const pageSize = defaultPageSize;
   const page = Number(req.query.pageNumber) || 1;
+  const keywordFilter = req.query.keyword
+    ? {
+        $or: [
+          { title: { $regex: req.query.keyword, $options: "i" } },
+          { category: { $regex: req.query.keyword, $options: "i" } },
+          { description: { $regex: req.query.keyword, $options: "i" } },
+        ],
+      }
+    : {};
 
-  logger.logRequest('GET', '/api/galleryprojects', { pageNumber: page });
+  logger.logRequest("GET", "/api/galleryprojects", {
+    pageNumber: page,
+    keyword: req.query.keyword,
+  });
 
   if (!isDbConnected()) {
-    logger.warn('DATABASE', 'MongoDB not connected, returning empty projects list');
+    logger.warn(
+      "DATABASE",
+      "MongoDB not connected, returning empty projects list",
+    );
     return res.json({
       projects: [],
       page: 1,
@@ -31,19 +46,19 @@ const getGalleryProjects = asyncHandler(async (req, res) => {
   }
 
   try {
-    logger.logDb('count', 'GalleryProject', {
-      description: 'Counting total gallery projects',
+    logger.logDb("count", "GalleryProject", {
+      description: "Counting total gallery projects",
     });
 
-    const total = await GalleryProject.countDocuments({});
+    const total = await GalleryProject.countDocuments(keywordFilter);
 
-    logger.logDb('find', 'GalleryProject', {
+    logger.logDb("find", "GalleryProject", {
       page,
       pageSize,
       skip: pageSize * (page - 1),
     });
 
-    const projects = await GalleryProject.find({})
+    const projects = await GalleryProject.find(keywordFilter)
       .sort({ featured: -1, sortOrder: 1, createdAt: -1 })
       .limit(pageSize)
       .skip(pageSize * (page - 1))
@@ -52,7 +67,7 @@ const getGalleryProjects = asyncHandler(async (req, res) => {
     const pages = Math.ceil(total / pageSize);
 
     const durationMs = Date.now() - startTime;
-    logger.logSuccess('/api/galleryprojects', 200, durationMs, {
+    logger.logSuccess("/api/galleryprojects", 200, durationMs, {
       projectsReturned: projects.length,
       page,
       pages,
@@ -66,7 +81,7 @@ const getGalleryProjects = asyncHandler(async (req, res) => {
       total,
     });
   } catch (error) {
-    logger.logError('GET_GALLERY_PROJECTS', error, {
+    logger.logError("GET_GALLERY_PROJECTS", error, {
       page,
       pageSize,
     });
@@ -81,21 +96,21 @@ const getGalleryProjectById = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const projectId = req.params.id;
 
-  logger.logRequest('GET', `/api/galleryprojects/${projectId}`);
+  logger.logRequest("GET", `/api/galleryprojects/${projectId}`);
 
   if (!isDbConnected()) {
-    logger.warn('DATABASE', 'MongoDB not connected, cannot retrieve project');
+    logger.warn("DATABASE", "MongoDB not connected, cannot retrieve project");
     res.status(404);
     throw new Error("Gallery project not found");
   }
 
   try {
-    logger.logDb('findById', 'GalleryProject', { _id: projectId });
+    logger.logDb("findById", "GalleryProject", { _id: projectId });
 
     const project = await GalleryProject.findById(projectId).lean();
 
     if (!project) {
-      logger.warn('DATABASE', 'Gallery project not found', { _id: projectId });
+      logger.warn("DATABASE", "Gallery project not found", { _id: projectId });
       res.status(404);
       throw new Error("Gallery project not found");
     }
@@ -107,7 +122,7 @@ const getGalleryProjectById = asyncHandler(async (req, res) => {
 
     res.json(project);
   } catch (error) {
-    logger.logError('GET_GALLERY_PROJECT_BY_ID', error, { projectId });
+    logger.logError("GET_GALLERY_PROJECT_BY_ID", error, { projectId });
     throw error;
   }
 });
@@ -127,28 +142,28 @@ const createGalleryProject = asyncHandler(async (req, res) => {
     images = [],
   } = req.body;
 
-  logger.logRequest('POST', '/api/galleryprojects', {}, req.user?.role);
+  logger.logRequest("POST", "/api/galleryprojects", {}, req.user?.role);
 
   // Validation
   if (!title || !description) {
-    logger.logValidation('CREATE_GALLERY_PROJECT', [
-      'Title is required',
-      'Description is required',
+    logger.logValidation("CREATE_GALLERY_PROJECT", [
+      "Title is required",
+      "Description is required",
     ]);
     res.status(400);
     throw new Error("Title and description are required");
   }
 
   if (!Array.isArray(images) || images.length === 0) {
-    logger.logValidation('CREATE_GALLERY_PROJECT', [
-      'At least one image is required',
+    logger.logValidation("CREATE_GALLERY_PROJECT", [
+      "At least one image is required",
     ]);
     res.status(400);
     throw new Error("At least one image is required");
   }
 
   try {
-    logger.logDb('create', 'GalleryProject', {
+    logger.logDb("create", "GalleryProject", {
       title,
       category,
       imageCount: images.length,
@@ -170,14 +185,14 @@ const createGalleryProject = asyncHandler(async (req, res) => {
     const createdProject = await project.save();
 
     const durationMs = Date.now() - startTime;
-    logger.logSuccess('/api/galleryprojects', 201, durationMs, {
+    logger.logSuccess("/api/galleryprojects", 201, durationMs, {
       projectId: createdProject._id,
       projectTitle: createdProject.title,
     });
 
     res.status(201).json(createdProject);
   } catch (error) {
-    logger.logError('CREATE_GALLERY_PROJECT', error, {
+    logger.logError("CREATE_GALLERY_PROJECT", error, {
       title,
       imageCount: images.length,
     });
@@ -201,15 +216,20 @@ const updateGalleryProject = asyncHandler(async (req, res) => {
     images,
   } = req.body;
 
-  logger.logRequest('PUT', `/api/galleryprojects/${projectId}`, {}, req.user?.role);
+  logger.logRequest(
+    "PUT",
+    `/api/galleryprojects/${projectId}`,
+    {},
+    req.user?.role,
+  );
 
   try {
-    logger.logDb('findById', 'GalleryProject', { _id: projectId });
+    logger.logDb("findById", "GalleryProject", { _id: projectId });
 
     const project = await GalleryProject.findById(projectId);
 
     if (!project) {
-      logger.warn('DATABASE', 'Gallery project not found for update', {
+      logger.warn("DATABASE", "Gallery project not found for update", {
         _id: projectId,
       });
       res.status(404);
@@ -229,13 +249,15 @@ const updateGalleryProject = asyncHandler(async (req, res) => {
     project.featured =
       typeof featured === "boolean" ? featured : Boolean(project.featured);
     project.sortOrder =
-      typeof sortOrder === "number" ? sortOrder : Number(project.sortOrder || 0);
+      typeof sortOrder === "number"
+        ? sortOrder
+        : Number(project.sortOrder || 0);
 
     if (Array.isArray(images) && images.length > 0) {
       project.images = images;
     }
 
-    logger.logDb('update', 'GalleryProject', {
+    logger.logDb("update", "GalleryProject", {
       _id: projectId,
       changes: {
         titleChanged: originalValues.title !== project.title,
@@ -254,7 +276,7 @@ const updateGalleryProject = asyncHandler(async (req, res) => {
 
     res.json(updatedProject);
   } catch (error) {
-    logger.logError('UPDATE_GALLERY_PROJECT', error, { projectId });
+    logger.logError("UPDATE_GALLERY_PROJECT", error, { projectId });
     throw error;
   }
 });
@@ -266,15 +288,20 @@ const deleteGalleryProject = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const projectId = req.params.id;
 
-  logger.logRequest('DELETE', `/api/galleryprojects/${projectId}`, {}, req.user?.role);
+  logger.logRequest(
+    "DELETE",
+    `/api/galleryprojects/${projectId}`,
+    {},
+    req.user?.role,
+  );
 
   try {
-    logger.logDb('findById', 'GalleryProject', { _id: projectId });
+    logger.logDb("findById", "GalleryProject", { _id: projectId });
 
     const project = await GalleryProject.findById(projectId);
 
     if (!project) {
-      logger.warn('DATABASE', 'Gallery project not found for deletion', {
+      logger.warn("DATABASE", "Gallery project not found for deletion", {
         _id: projectId,
       });
       res.status(404);
@@ -294,16 +321,16 @@ const deleteGalleryProject = asyncHandler(async (req, res) => {
         try {
           await unlink(filePath);
           deletedImageCount++;
-          logger.debug('FILE_SYSTEM', `Deleted image file: ${image}`);
+          logger.debug("FILE_SYSTEM", `Deleted image file: ${image}`);
         } catch (fileError) {
-          logger.warn('FILE_SYSTEM', `Failed to delete image file: ${image}`, {
+          logger.warn("FILE_SYSTEM", `Failed to delete image file: ${image}`, {
             error: fileError?.message,
           });
         }
       }
     }
 
-    logger.logDb('delete', 'GalleryProject', {
+    logger.logDb("delete", "GalleryProject", {
       _id: projectId,
       projectTitle: project.title,
       deletedImageCount,
@@ -320,7 +347,7 @@ const deleteGalleryProject = asyncHandler(async (req, res) => {
 
     res.json({ message: "Gallery project deleted" });
   } catch (error) {
-    logger.logError('DELETE_GALLERY_PROJECT', error, { projectId });
+    logger.logError("DELETE_GALLERY_PROJECT", error, { projectId });
     throw error;
   }
 });

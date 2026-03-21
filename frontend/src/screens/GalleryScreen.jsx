@@ -4,15 +4,21 @@ import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Meta from "../components/Meta";
 import Paginate from "../components/Paginate";
+import SearchBox from "../components/SearchBox";
 import { formatCalendarDate } from "../utils/calendarDate";
 import getErrorMessage from "../utils/getErrorMessage";
 import getOptimizedImageUrl from "../utils/getOptimizedImageUrl";
 import { useGetGalleryProjectsQuery } from "../slices/galleryApiSlice";
 
 const GalleryScreen = () => {
-  const { pageNumber = 1 } = useParams();
-  const { data: response = {}, isLoading, error } = useGetGalleryProjectsQuery({
+  const { pageNumber = 1, keyword } = useParams();
+  const {
+    data: response = {},
+    isLoading,
+    error,
+  } = useGetGalleryProjectsQuery({
     pageNumber: Number(pageNumber),
+    keyword,
   });
 
   const projects = response.projects || [];
@@ -32,6 +38,16 @@ const GalleryScreen = () => {
           A look at completed projects. Each project includes multiple photos so
           you can see detail, finish, and the final space.
         </p>
+        <SearchBox
+          basePath="/gallery/search"
+          defaultPath="/gallery"
+          placeholder="Search projects..."
+        />
+        {keyword && (
+          <Link to="/gallery" className="btn btn-light mt-2">
+            Clear Search
+          </Link>
+        )}
       </section>
 
       {isLoading ? (
@@ -94,7 +110,12 @@ const GalleryScreen = () => {
               </Col>
             ))}
           </Row>
-          <Paginate pages={pages} page={page} isGallery={true} />
+          <Paginate
+            pages={pages}
+            page={page}
+            isGallery={true}
+            galleryKeyword={keyword}
+          />
         </>
       )}
     </>

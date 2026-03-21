@@ -2,10 +2,12 @@ import { useState } from "react";
 import { Button, Col, Form, Image, Row, Table } from "react-bootstrap";
 import { FaEdit, FaTrashAlt } from "react-icons/fa";
 import { LinkContainer } from "react-router-bootstrap";
+import { useParams } from "react-router-dom";
 import { toast } from "react-toastify";
 import Loader from "../../components/Loader";
 import Message from "../../components/Message";
 import Meta from "../../components/Meta";
+import Paginate from "../../components/Paginate";
 import getErrorMessage from "../../utils/getErrorMessage";
 import {
   useCreateGalleryProjectMutation,
@@ -25,6 +27,7 @@ const initialState = {
 };
 
 const GalleryProjectListScreen = () => {
+  const { pageNumber } = useParams();
   const [formState, setFormState] = useState(initialState);
   const [fileInputKey, setFileInputKey] = useState(0);
 
@@ -33,9 +36,11 @@ const GalleryProjectListScreen = () => {
     isLoading,
     error,
     refetch,
-  } = useGetGalleryProjectsQuery();
+  } = useGetGalleryProjectsQuery({ pageNumber });
 
   const projects = response.projects || [];
+  const pages = response.pages || 1;
+  const page = response.page || 1;
 
   const [createGalleryProject, { isLoading: creating }] =
     useCreateGalleryProjectMutation();
@@ -329,7 +334,9 @@ const GalleryProjectListScreen = () => {
                       <Button
                         variant="danger"
                         className="btn-sm mx-2"
-                        onClick={() => deleteHandler(project._id, project.title)}
+                        onClick={() =>
+                          deleteHandler(project._id, project.title)
+                        }
                       >
                         <FaTrashAlt style={{ color: "white" }} />
                       </Button>
@@ -339,6 +346,7 @@ const GalleryProjectListScreen = () => {
               </tbody>
             </Table>
           )}
+          <Paginate pages={pages} page={page} isAdminGallery={true} />
         </Col>
       </Row>
     </>
