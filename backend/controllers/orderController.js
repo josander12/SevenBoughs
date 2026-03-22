@@ -17,7 +17,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
     totalPrice,
   } = req.body;
 
-  logger.logRequest("POST", "/api/orders", {}, req.user?.role);
+  logger.logRequest("POST", "/api/orders", req);
 
   if (orderItems && orderItems.length === 0) {
     logger.logValidation("ADD_ORDER_ITEMS", ["No order items provided"]);
@@ -73,7 +73,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const userId = req.user._id;
 
-  logger.logRequest("GET", "/api/orders/myorders", {}, req.user?.role);
+  logger.logRequest("GET", "/api/orders/myorders", req);
 
   try {
     logger.logDb("find", "Order", { user: userId });

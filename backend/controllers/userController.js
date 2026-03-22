@@ -10,7 +10,7 @@ const authUser = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const { email, password } = req.body;
 
-  logger.logRequest("POST", "/api/users/login");
+  logger.logRequest("POST", "/api/users/login", req);
 
   try {
     logger.logDb("findOne", "User", { email });
@@ -52,7 +52,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const { name, email, password } = req.body;
 
-  logger.logRequest("POST", "/api/users");
+  logger.logRequest("POST", "/api/users", req);
 
   try {
     logger.logDb("findOne", "User", { email });

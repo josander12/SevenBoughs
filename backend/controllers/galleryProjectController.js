@@ -29,7 +29,7 @@ const getGalleryProjects = asyncHandler(async (req, res) => {
       }
     : {};
 
-  logger.logRequest("GET", "/api/galleryprojects", {
+  logger.logRequest("GET", "/api/galleryprojects", req, {
     pageNumber: page,
     keyword: req.query.keyword,
   });
@@ -98,7 +98,7 @@ const getGalleryProjectById = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const projectId = req.params.id;
 
-  logger.logRequest("GET", `/api/galleryprojects/${projectId}`);
+  logger.logRequest("GET", `/api/galleryprojects/${projectId}`, req);
 
   if (!isDbConnected()) {
     logger.warn("DATABASE", "MongoDB not connected, cannot retrieve project");
@@ -144,7 +144,7 @@ const createGalleryProject = asyncHandler(async (req, res) => {
     images = [],
   } = req.body;
 
-  logger.logRequest("POST", "/api/galleryprojects", {}, req.user?.role);
+  logger.logRequest("POST", "/api/galleryprojects", req);
 
   // Validation
   if (!title || !description) {
@@ -221,8 +221,7 @@ const updateGalleryProject = asyncHandler(async (req, res) => {
   logger.logRequest(
     "PUT",
     `/api/galleryprojects/${projectId}`,
-    {},
-    req.user?.role,
+    req,
   );
 
   try {
@@ -293,8 +292,7 @@ const deleteGalleryProject = asyncHandler(async (req, res) => {
   logger.logRequest(
     "DELETE",
     `/api/galleryprojects/${projectId}`,
-    {},
-    req.user?.role,
+    req,
   );
 
   try {

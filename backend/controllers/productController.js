@@ -31,7 +31,7 @@ const getProducts = asyncHandler(async (req, res) => {
   const page = Number(req.query.pageNumber) || 1;
   const keywordText = (req.query.keyword || "").toString().trim();
 
-  logger.logRequest("GET", "/api/products", {
+  logger.logRequest("GET", "/api/products", req, {
     page,
     keyword: keywordText || undefined,
   });
@@ -146,7 +146,7 @@ const getProductById = asyncHandler(async (req, res) => {
   const startTime = Date.now();
   const productId = req.params.id;
 
-  logger.logRequest("GET", `/api/products/${productId}`);
+  logger.logRequest("GET", `/api/products/${productId}`, req);
 
   if (!isDbConnected()) {
     logger.warn("DATABASE", "MongoDB not connected, using fallback seed data");

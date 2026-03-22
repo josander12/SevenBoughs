@@ -53,15 +53,18 @@ const logger = {
    * Log API endpoint access with request details
    * @param {string} method - HTTP method
    * @param {string} endpoint - API endpoint
+   * @param {object} req - Express request object (for IP and user info)
    * @param {object} query - Query parameters
-   * @param {string} userRole - User role if authenticated
    */
-  logRequest: (method, endpoint, query = {}, userRole = null) => {
+  logRequest: (method, endpoint, req, query = {}) => {
+    const ip = req?.ip || req?.connection?.remoteAddress || "unknown";
+    const username = req?.user?.name || "anonymous";
     const data = {
       method,
       endpoint,
+      ip,
+      username,
       query: Object.keys(query).length > 0 ? query : undefined,
-      userRole,
     };
     logger.debug("API_REQUEST", `${method} ${endpoint}`, data);
   },
