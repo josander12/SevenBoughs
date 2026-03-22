@@ -53,7 +53,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
         orderId: createdOrder._id,
         itemCount: createdOrder.orderItems.length,
         totalPrice: createdOrder.totalPrice,
-      });
+      }, req);
 
       res.status(201).json(createdOrder);
     } catch (error) {
@@ -82,7 +82,7 @@ const getMyOrders = asyncHandler(async (req, res) => {
     const durationMs = Date.now() - startTime;
     logger.logSuccess("/api/orders/myorders", 200, durationMs, {
       ordersReturned: orders.length,
-    });
+    }, req);
 
     res.status(200).json(orders);
   } catch (error) {

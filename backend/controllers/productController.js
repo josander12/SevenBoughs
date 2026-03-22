@@ -68,7 +68,7 @@ const getProducts = asyncHandler(async (req, res) => {
       source: "fallback",
       page,
       pages,
-    });
+    }, req);
 
     return res.json({ products, page, pages });
   }
@@ -124,7 +124,7 @@ const getProducts = asyncHandler(async (req, res) => {
       page,
       pages,
       total: count,
-    });
+    }, req);
 
     res.json({
       products: cleanedProducts,
@@ -159,7 +159,7 @@ const getProductById = asyncHandler(async (req, res) => {
       logger.logSuccess(`/api/products/${productId}`, 200, durationMs, {
         source: "fallback",
         productName: product.name,
-      });
+      }, req);
       return res.json(product);
     }
 
@@ -178,7 +178,7 @@ const getProductById = asyncHandler(async (req, res) => {
       const durationMs = Date.now() - startTime;
       logger.logSuccess(`/api/products/${productId}`, 200, durationMs, {
         productName: product.name,
-      });
+      }, req);
       return res.json(product);
     } else {
       logger.warn("DATABASE", "Product not found", { _id: productId });

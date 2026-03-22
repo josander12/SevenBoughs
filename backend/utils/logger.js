@@ -75,12 +75,17 @@ const logger = {
    * @param {number} statusCode - HTTP status code
    * @param {number} durationMs - Request duration in milliseconds
    * @param {object} responseData - Response metadata (not full response body)
+   * @param {object} req - Express request object (for IP and user info)
    */
-  logSuccess: (endpoint, statusCode, durationMs, responseData = {}) => {
+  logSuccess: (endpoint, statusCode, durationMs, responseData = {}, req) => {
+    const ip = req?.ip || req?.connection?.remoteAddress || "unknown";
+    const username = req?.user?.name || "anonymous";
     const data = {
       endpoint,
       statusCode,
       durationMs,
+      ip,
+      username,
       ...responseData,
     };
     logger.info(

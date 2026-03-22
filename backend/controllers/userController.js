@@ -24,7 +24,7 @@ const authUser = asyncHandler(async (req, res) => {
         userId: user._id,
         userEmail: user.email,
         isAdmin: user.isAdmin,
-      });
+      }, req);
 
       res.status(200).json({
         _id: user._id,
@@ -79,7 +79,7 @@ const registerUser = asyncHandler(async (req, res) => {
     logger.logSuccess("/api/users", 201, durationMs, {
       userId: user._id,
       userEmail: user.email,
-    });
+    }, req);
 
     res.status(201).json({
       _id: user._id,

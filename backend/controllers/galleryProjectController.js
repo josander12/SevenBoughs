@@ -74,7 +74,7 @@ const getGalleryProjects = asyncHandler(async (req, res) => {
       page,
       pages,
       total,
-    });
+    }, req);
 
     res.json({
       projects,
@@ -120,7 +120,7 @@ const getGalleryProjectById = asyncHandler(async (req, res) => {
     const durationMs = Date.now() - startTime;
     logger.logSuccess(`/api/galleryprojects/${projectId}`, 200, durationMs, {
       projectTitle: project.title,
-    });
+    }, req);
 
     res.json(project);
   } catch (error) {
@@ -190,7 +190,7 @@ const createGalleryProject = asyncHandler(async (req, res) => {
     logger.logSuccess("/api/galleryprojects", 201, durationMs, {
       projectId: createdProject._id,
       projectTitle: createdProject.title,
-    });
+    }, req);
 
     res.status(201).json(createdProject);
   } catch (error) {
@@ -273,7 +273,7 @@ const updateGalleryProject = asyncHandler(async (req, res) => {
     const durationMs = Date.now() - startTime;
     logger.logSuccess(`/api/galleryprojects/${projectId}`, 200, durationMs, {
       projectTitle: updatedProject.title,
-    });
+    }, req);
 
     res.json(updatedProject);
   } catch (error) {
@@ -343,7 +343,7 @@ const deleteGalleryProject = asyncHandler(async (req, res) => {
     logger.logSuccess(`/api/galleryprojects/${projectId}`, 200, durationMs, {
       projectTitle: project.title,
       deletedImageCount,
-    });
+    }, req);
 
     res.json({ message: "Gallery project deleted" });
   } catch (error) {
